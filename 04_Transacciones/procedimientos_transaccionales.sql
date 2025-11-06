@@ -10,7 +10,8 @@ Características: TRY...CATCH, COMMIT/ROLLBACK, SAVEPOINT, validaciones de negoc
 ================================================================================
 */
 
-USE EduGestor_BDII;
+-- Configuración inicial - Conectar a base de datos del curso
+USE BD2_Curso2025;
 GO
 
 /*

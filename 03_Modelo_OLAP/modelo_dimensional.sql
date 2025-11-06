@@ -9,7 +9,8 @@ Arquitectura: Esquema Estrella con jerarquías temporales y académicas
 ================================================================================
 */
 
-USE EduGestor_BDII;
+-- Configuración inicial - Conectar a base de datos del curso
+USE BD2_Curso2025;
 GO
 
 /*

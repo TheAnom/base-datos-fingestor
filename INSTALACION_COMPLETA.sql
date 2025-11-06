@@ -34,20 +34,9 @@ BEGIN TRY
     PRINT '';
     PRINT 'FASE 1: Creando base de datos y modelo transaccional...';
     
-    -- Crear base de datos si no existe
-    USE master;
-    
-    IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'EduGestor_BDII')
-    BEGIN
-        CREATE DATABASE EduGestor_BDII;
-        PRINT '✓ Base de datos EduGestor_BDII creada';
-    END
-    ELSE
-    BEGIN
-        PRINT '✓ Base de datos EduGestor_BDII ya existe';
-    END
-    
-    USE EduGestor_BDII;
+    -- Conectar a base de datos del curso
+    USE BD2_Curso2025;
+    PRINT '✓ Conectado a base de datos BD2_Curso2025';
     
     -- Verificar si las tablas ya existen
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'grado')

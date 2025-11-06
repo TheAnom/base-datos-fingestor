@@ -7,7 +7,8 @@
 
 **Autor:** Proyecto BDII - Sistema Educativo Integral  
 **Fecha:** Noviembre 2024  
-**Base de Datos:** SQL Server  
+**Base de Datos:** BD2_Curso2025 (SQL Server 2019+)  
+**Configuración:** Utiliza base de datos existente del curso  
 **Objetivo:** Implementar una solución completa que integre procesamiento transaccional y componentes analíticos para gestión educativa  
 
 ---

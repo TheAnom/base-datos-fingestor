@@ -34,9 +34,12 @@ Sistema de base de datos empresarial que integra procesamiento transaccional (OL
 | **.NET Framework** | 4.7.2 | 4.8+ | ⚠️ Dependencia |
 
 ### Permisos Requeridos
-- **Administrador de SQL Server:** Para creación de base de datos y roles
-- **Permisos de sistema:** Para instalación de componentes
-- **Acceso de red:** Para validación de licencias (si aplica)
+- **Base de datos BD2_Curso2025:** Debe existir y estar accesible
+- **Permisos db_owner:** En la base de datos BD2_Curso2025 para crear objetos
+- **Permisos de sistema:** Para instalación de componentes (si es necesario)
+
+### ⚠️ IMPORTANTE
+Este proyecto está configurado para trabajar con la base de datos **BD2_Curso2025** existente. No creará una nueva base de datos.
 
 ---
 
@@ -82,7 +85,7 @@ SELECT
 #### Paso 4: Verificación Automática
 El script incluye verificaciones automáticas que mostrarán:
 ```
-✅ Base de datos creada: EduGestor_BDII
+✅ Base de datos conectada: BD2_Curso2025
 ✅ Tablas del sistema: 13
 ✅ Procedimientos almacenados: 15+
 ✅ Roles de seguridad: 6
@@ -368,7 +371,7 @@ EXEC sp_ReporteActividadUsuarios
 **Síntoma:** Mensaje de error al ejecutar consultas
 ```
 Solución:
-1. Verificar conexión: USE EduGestor_BDII;
+1. Verificar conexión: USE BD2_Curso2025;
 2. Re-ejecutar: 02_Modelo_ER/modelo_ER.sql
 3. Verificar permisos de creación de BD
 ```

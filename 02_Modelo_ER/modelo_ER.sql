@@ -9,23 +9,8 @@ Base de Datos: SQL Server
 ================================================================================
 */
 
--- Configuración inicial de la base de datos
-USE master;
-GO
-
--- Crear base de datos si no existe
-IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'EduGestor_BDII')
-BEGIN
-    CREATE DATABASE EduGestor_BDII;
-    PRINT 'Base de datos EduGestor_BDII creada exitosamente';
-END
-ELSE
-BEGIN
-    PRINT 'La base de datos EduGestor_BDII ya existe';
-END
-GO
-
-USE EduGestor_BDII;
+-- Configuración inicial - Conectar a base de datos del curso
+USE BD2_Curso2025;
 GO
 
 /*

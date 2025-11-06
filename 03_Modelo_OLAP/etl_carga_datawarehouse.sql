@@ -10,7 +10,8 @@ Estrategia: Carga incremental con control de cambios (SCD Tipo 2)
 ================================================================================
 */
 
-USE EduGestor_BDII;
+-- Configuración inicial - Conectar a base de datos del curso
+USE BD2_Curso2025;
 GO
 
 /*
