@@ -1,24 +1,20 @@
-/*
-================================================================================
-PROCESOS ETL - CARGA DEL DATA WAREHOUSE
-================================================================================
-Descripción: Procedimientos para extraer, transformar y cargar datos desde 
-             el sistema transaccional al modelo dimensional
-Autor: Proyecto BDII
-Fecha: Noviembre 2024
-Estrategia: Carga incremental con control de cambios (SCD Tipo 2)
-================================================================================
-*/
+-- ================================================================================
+-- PROCESOS ETL - CARGA DEL DATA WAREHOUSE
+-- ================================================================================
+-- Descripción: Procedimientos para extraer, transformar y cargar datos desde 
+--              el sistema transaccional al modelo dimensional
+-- Autor: Proyecto BDII
+-- Fecha: Noviembre 2024
+-- Estrategia: Carga incremental con control de cambios (SCD Tipo 2)
+-- ================================================================================
 
 -- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO: CARGA DIMENSIÓN TIEMPO
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA DIMENSIÓN TIEMPO
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimTiempo
     @FechaInicio DATE = NULL,
@@ -79,11 +75,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO: CARGA DIMENSIÓN ESTUDIANTE (SCD TIPO 2)
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA DIMENSIÓN ESTUDIANTE (SCD TIPO 2)
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimEstudiante
 AS
@@ -152,11 +146,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO: CARGA DIMENSIÓN CURSO (SCD TIPO 2)
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA DIMENSIÓN CURSO (SCD TIPO 2)
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimCurso
 AS
@@ -236,12 +228,11 @@ BEGIN
     
     PRINT 'Carga de DimCurso completada';
 END
-GO/
-*
-================================================================================
-PROCEDIMIENTO: CARGA DIMENSIÓN CONCEPTO PAGO
-================================================================================
-*/
+GO
+
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA DIMENSIÓN CONCEPTO PAGO
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimConceptoPago
 AS
@@ -304,11 +295,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO: CARGA DIMENSIÓN USUARIO
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA DIMENSIÓN USUARIO
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimUsuario
 AS
@@ -373,11 +362,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO: CARGA TABLA DE HECHOS - CALIFICACIONES
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA TABLA DE HECHOS - CALIFICACIONES
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarFactCalificaciones
     @FechaInicio DATE = NULL,
@@ -452,11 +439,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO: CARGA TABLA DE HECHOS - PAGOS
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO: CARGA TABLA DE HECHOS - PAGOS
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarFactPagos
     @FechaInicio DATE = NULL,
@@ -514,11 +499,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO MAESTRO: CARGA COMPLETA DEL DATA WAREHOUSE
-================================================================================
-*/
+-- ================================================================================
+-- PROCEDIMIENTO MAESTRO: CARGA COMPLETA DEL DATA WAREHOUSE
+-- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargaCompletaDataWarehouse
     @FechaInicio DATE = NULL,

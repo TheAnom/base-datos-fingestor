@@ -1,10 +1,8 @@
-# 📋 PROPUESTA DE PROYECTO FINAL - BASES DE DATOS II
+# PROPUESTA DE PROYECTO FINAL - BASES DE DATOS II
 
 ## Sistema de Gestión Educativa "EduGestor"
 
----
-
-### 📊 INFORMACIÓN DEL PROYECTO
+### INFORMACIÓN DEL PROYECTO
 
 | Campo | Detalle |
 |-------|---------|
@@ -14,40 +12,40 @@
 | **Tecnología** | SQL Server + T-SQL Avanzado |
 | **Modalidad** | Individual |
 
-### 🎯 OBJETIVO PRINCIPAL
+### OBJETIVO PRINCIPAL
 
 Implementar una solución completa de base de datos que integre procesamiento transaccional (OLTP) y componentes analíticos (OLAP) para la gestión educativa integral, demostrando dominio avanzado en diseño, implementación y optimización de sistemas de bases de datos empresariales.
 
 ---
 
-## 1. 🔍 DESCRIPCIÓN DEL PROBLEMA
+## 1. DESCRIPCIÓN DEL PROBLEMA
 
 ### Problemática Identificada
 
 Las instituciones educativas modernas enfrentan desafíos significativos en la gestión de información:
 
-#### 🚫 Problemas Actuales
-- **Fragmentación de datos:** Información dispersa en múltiples sistemas incompatibles
-- **Falta de integridad:** Ausencia de controles referenciales entre módulos
-- **Procesos manuales:** Operaciones críticas sin automatización ni validaciones
-- **Reportes limitados:** Capacidad analítica insuficiente para toma de decisiones
-- **Seguridad deficiente:** Acceso no controlado a información sensible de estudiantes
-- **Escalabilidad limitada:** Sistemas que no crecen con la institución
+#### Problemas Actuales
+- Fragmentación de datos en múltiples sistemas incompatibles
+- Falta de integridad entre módulos
+- Procesos manuales sin automatización
+- Reportes limitados para toma de decisiones
+- Seguridad deficiente en información sensible
+- Escalabilidad limitada
 
-#### 🎯 Necesidades Identificadas
+#### Necesidades Identificadas
 
-Las instituciones educativas requieren un sistema integral que permita:
+Las instituciones educativas requieren:
 
-- ✅ **Gestionar estudiantes, profesores y cursos** de manera eficiente y centralizada
-- ✅ **Controlar asignaciones académicas y calificaciones** con trazabilidad completa
-- ✅ **Administrar pagos y conceptos financieros** con control de duplicados y auditoría
-- ✅ **Implementar seguridad basada en roles** con permisos granulares
-- ✅ **Generar reportes analíticos** para toma de decisiones estratégicas
-- ✅ **Garantizar integridad y consistencia** de datos críticos
+- Gestionar estudiantes, profesores y cursos de manera centralizada
+- Controlar asignaciones académicas y calificaciones con trazabilidad
+- Administrar pagos y conceptos financieros con auditoría
+- Implementar seguridad basada en roles
+- Generar reportes analíticos para decisiones estratégicas
+- Garantizar integridad y consistencia de datos
 
 ---
 
-## 2. 🎯 OBJETIVOS DEL PROYECTO
+## 2. OBJETIVOS DEL PROYECTO
 
 ### Objetivo General
 

@@ -1,23 +1,19 @@
-/*
-================================================================================
-MODELO DIMENSIONAL - DATA WAREHOUSE EDUGESTOR
-================================================================================
-Descripción: Implementación de modelo estrella para análisis OLAP
-Autor: Proyecto BDII
-Fecha: Noviembre 2024
-Arquitectura: Esquema Estrella con jerarquías temporales y académicas
-================================================================================
-*/
+-- ================================================================================
+-- MODELO DIMENSIONAL - DATA WAREHOUSE EDUGESTOR
+-- ================================================================================
+-- Descripción: Implementación de modelo estrella para análisis OLAP
+-- Autor: Proyecto BDII
+-- Fecha: Noviembre 2024
+-- Arquitectura: Esquema Estrella con jerarquías temporales y académicas
+-- ================================================================================
 
 -- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
-/*
-================================================================================
-CREACIÓN DE ESQUEMA PARA DATA WAREHOUSE
-================================================================================
-*/
+-- ================================================================================
+-- CREACIÓN DE ESQUEMA PARA DATA WAREHOUSE
+-- ================================================================================
 
 -- Crear esquema separado para el Data Warehouse
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'DW')
@@ -27,11 +23,9 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-DIMENSIONES DEL DATA WAREHOUSE
-================================================================================
-*/
+-- ================================================================================
+-- DIMENSIONES DEL DATA WAREHOUSE
+-- ================================================================================
 
 -- DIMENSIÓN TIEMPO
 -- Propósito: Jerarquía temporal completa para análisis por períodos
@@ -72,8 +66,9 @@ CREATE TABLE DW.DimTiempo (
     nombre_festivo NVARCHAR(50),
     
     fecha_creacion DATETIME2 DEFAULT GETDATE()
-);-- DIMENSIÓ
-N ESTUDIANTE
+);
+
+-- DIMENSIÓN ESTUDIANTE
 -- Propósito: Información demográfica y académica de estudiantes
 -- Jerarquías: Institución > Grado > Estudiante
 CREATE TABLE DW.DimEstudiante (
@@ -200,12 +195,11 @@ CREATE TABLE DW.DimUsuario (
     fecha_fin_vigencia DATE,
     es_vigente BIT DEFAULT 1,
     fecha_creacion DATETIME2 DEFAULT GETDATE()
-);/*
+);
 
-================================================================================
-TABLAS DE HECHOS (FACT TABLES)
-================================================================================
-*/
+-- ================================================================================
+-- TABLAS DE HECHOS (FACT TABLES)
+-- ================================================================================
 
 -- TABLA DE HECHOS: CALIFICACIONES
 -- Propósito: Análisis del rendimiento académico
@@ -297,11 +291,9 @@ CREATE TABLE DW.FactPagos (
     CONSTRAINT FK_FactPago_Usuario FOREIGN KEY (usuario_key) REFERENCES DW.DimUsuario(usuario_key)
 );
 
-/*
-================================================================================
-ÍNDICES PARA OPTIMIZACIÓN DE CONSULTAS OLAP
-================================================================================
-*/
+-- ================================================================================
+-- ÍNDICES PARA OPTIMIZACIÓN DE CONSULTAS OLAP
+-- ================================================================================
 
 -- Índices en dimensiones (campos de jerarquía)
 CREATE NONCLUSTERED INDEX IX_DimTiempo_Año_Mes ON DW.DimTiempo(año, mes);

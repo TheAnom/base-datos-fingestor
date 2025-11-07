@@ -1,58 +1,25 @@
-# 📋 GUÍA DE INSTALACIÓN Y EJECUCIÓN - SISTEMA EDUGESTOR
+# Proyecto Base de datos
 
-## Proyecto Final - Bases de Datos II
+Base de datos que integra procedimientos transaccionales y analiticos para la institución educativa.
 
----
+## Permisos Requeridos
+- Base de datos BD2_Curso2025 debe existir
+- Permisos db_owner en BD2_Curso2025 
+- Permisos de sistema para instalación
 
-## 🎯 INFORMACIÓN GENERAL
+### IMPORTANTE
+Este proyecto usa la base de datos BD2_Curso2025 existente. No crea una nueva base de datos.
 
-**Sistema:** EduGestor - Plataforma Integral de Gestión Educativa  
-**Versión:** 1.0.0  
-**Autor:** Proyecto BDII - Sistema Educativo Integral  
-**Fecha:** Noviembre 2024  
-**Licencia:** Académica  
+## PROCESO DE INSTALACIÓN
 
-### Descripción Técnica
-Sistema de base de datos empresarial que integra procesamiento transaccional (OLTP) y analítico (OLAP) para instituciones educativas, implementando las mejores prácticas de ingeniería de software y administración de bases de datos.
-
----
-
-## ⚙️ REQUISITOS DEL SISTEMA
-
-### Requisitos Mínimos de Hardware
-- **CPU:** Intel Core i5 / AMD Ryzen 5 o superior
-- **RAM:** 8 GB mínimo (16 GB recomendado)
-- **Almacenamiento:** 10 GB de espacio libre
-- **Red:** Conexión estable para descargas de dependencias
-
-### Requisitos de Software
-| Componente | Versión Mínima | Versión Recomendada | Estado |
-|------------|----------------|---------------------|--------|
-| **SQL Server** | 2017 | 2019/2022 | ✅ Requerido |
-| **SQL Server Management Studio (SSMS)** | 18.0 | 19.0+ | ✅ Requerido |
-| **Windows** | 10 | 11 | ✅ Requerido |
-| **.NET Framework** | 4.7.2 | 4.8+ | ⚠️ Dependencia |
-
-### Permisos Requeridos
-- **Base de datos BD2_Curso2025:** Debe existir y estar accesible
-- **Permisos db_owner:** En la base de datos BD2_Curso2025 para crear objetos
-- **Permisos de sistema:** Para instalación de componentes (si es necesario)
-
-### ⚠️ IMPORTANTE
-Este proyecto está configurado para trabajar con la base de datos **BD2_Curso2025** existente. No creará una nueva base de datos.
-
----
-
-## 🚀 PROCESO DE INSTALACIÓN
-
-### MÉTODO 1: INSTALACIÓN AUTOMÁTICA (Recomendado para Desarrollo)
+### MÉTODO 1: INSTALACIÓN AUTOMÁTICA
 
 #### Paso 1: Preparación del Entorno
-```powershell
-# Verificar versión de SQL Server
+```sql
+-- Verificar versión de SQL Server
 SELECT @@VERSION;
 
-# Verificar permisos actuales
+-- Verificar permisos actuales
 SELECT 
     SUSER_NAME() as 'Usuario Actual',
     IS_SRVROLEMEMBER('sysadmin') as 'Es Admin',
@@ -60,41 +27,27 @@ SELECT
 ```
 
 #### Paso 2: Descarga y Preparación
-1. **Clonar/Descargar** el repositorio del proyecto
-2. **Extraer** todos los archivos en una carpeta local (ej: `C:\EduGestor\`)
-3. **Verificar** que todos los archivos .sql estén presentes:
-   ```
-   ✅ INSTALACION_COMPLETA.sql
-   ✅ 02_Modelo_ER/modelo_ER.sql
-   ✅ 02_Modelo_ER/datos_prueba.sql
-   ✅ 03_Modelo_OLAP/modelo_dimensional.sql
-   ✅ [... resto de archivos]
-   ```
+1. Descargar el proyecto
+2. Extraer archivos en carpeta local
+3. Verificar que estén todos los archivos .sql
 
 #### Paso 3: Ejecución Automática
-1. **Abrir SQL Server Management Studio (SSMS)**
-2. **Conectar** al servidor SQL Server con permisos de administrador
-3. **Abrir** el archivo `INSTALACION_COMPLETA.sql`
-4. **Ejecutar** el script completo (F5 o Ctrl+E)
+1. Abrir SQL Server Management Studio
+2. Conectar al servidor con permisos de admin
+3. Abrir el archivo INSTALACION_COMPLETA.sql
+4. Ejecutar el script completo
 
-```sql
--- Comando de instalación automática
-:r "C:\EduGestor\INSTALACION_COMPLETA.sql"
-```
-
-#### Paso 4: Verificación Automática
-El script incluye verificaciones automáticas que mostrarán:
-```
-✅ Base de datos conectada: BD2_Curso2025
-✅ Tablas del sistema: 13
-✅ Procedimientos almacenados: 15+
-✅ Roles de seguridad: 6
-✅ Índices optimizados: 10
-```
+#### Paso 4: Verificación
+El script muestra:
+- Base de datos conectada: BD2_Curso2025
+- Tablas del sistema: 13
+- Procedimientos almacenados: 15+
+- Roles de seguridad: 6
+- Índices optimizados: 10
 
 ---
 
-### MÉTODO 2: INSTALACIÓN MANUAL (Recomendado para Producción)
+### MÉTODO 2: INSTALACIÓN MANUAL
 
 #### Fase 1: Modelo Transaccional (OLTP)
 ```sql
@@ -110,8 +63,8 @@ SELECT COUNT(*) as 'Profesores' FROM profesor;
 SELECT COUNT(*) as 'Cursos' FROM curso;
 ```
 
-**⏱️ Tiempo estimado:** 2-3 minutos  
-**✅ Criterio de éxito:** 13 tablas creadas, datos de ejemplo cargados
+Tiempo estimado: 2-3 minutos  
+Resultado: 13 tablas creadas, datos de ejemplo cargados
 
 #### Fase 2: Modelo Dimensional (OLAP)
 ```sql
@@ -127,8 +80,8 @@ EXEC DW.sp_CargaCompletaDataWarehouse
     @FechaFin = '2024-12-31';
 ```
 
-**⏱️ Tiempo estimado:** 3-5 minutos  
-**✅ Criterio de éxito:** Esquema DW creado, dimensiones pobladas
+Tiempo estimado: 3-5 minutos  
+Resultado: Esquema DW creado, dimensiones pobladas
 
 #### Fase 3: Lógica Transaccional
 ```sql
@@ -143,8 +96,8 @@ EXEC sp_MatricularEstudiante
 PRINT @Resultado;
 ```
 
-**⏱️ Tiempo estimado:** 2-3 minutos  
-**✅ Criterio de éxito:** 4 procedimientos creados y funcionales
+Tiempo estimado: 2-3 minutos  
+Resultado: 4 procedimientos creados y funcionales
 
 #### Fase 4: Consultas Analíticas
 ```sql
@@ -155,8 +108,8 @@ PRINT @Resultado;
 SELECT * FROM vw_DashboardEjecutivo;
 ```
 
-**⏱️ Tiempo estimado:** 1-2 minutos  
-**✅ Criterio de éxito:** Dashboard funcional con datos en tiempo real
+Tiempo estimado: 1-2 minutos  
+Resultado: Dashboard funcional con datos en tiempo real
 
 #### Fase 5: Sistema de Seguridad
 ```sql
@@ -167,8 +120,8 @@ SELECT * FROM vw_DashboardEjecutivo;
 EXEC sp_ReporteMatrizPermisos;
 ```
 
-**⏱️ Tiempo estimado:** 2-3 minutos  
-**✅ Criterio de éxito:** 6 roles creados, auditoría activa
+Tiempo estimado: 2-3 minutos  
+Resultado: 6 roles creados, auditoría activa
 
 #### Fase 6: Optimización y Rendimiento
 ```sql
@@ -183,34 +136,34 @@ EXEC sp_OptimizacionAutomatica
     @GenerarReporte = 1;
 ```
 
-**⏱️ Tiempo estimado:** 3-5 minutos  
-**✅ Criterio de éxito:** Índices optimizados, rendimiento mejorado
+Tiempo estimado: 3-5 minutos  
+Resultado: Índices optimizados, rendimiento mejorado
 
 ---
 
-## 🔍 VERIFICACIÓN POST-INSTALACIÓN
+## VERIFICACIÓN POST-INSTALACIÓN
 
 ### Checklist de Verificación Completa
 
-#### ✅ Verificación de Estructura
+#### Verificación de Estructura
 ```sql
 -- Contar componentes instalados
 SELECT 'Componente' as Tipo, 'Cantidad' as Valor, 'Estado' as Status
 UNION ALL
 SELECT 'Tablas Sistema', CAST(COUNT(*) AS NVARCHAR(10)), 
-       CASE WHEN COUNT(*) = 13 THEN '✅ OK' ELSE '❌ ERROR' END
+       CASE WHEN COUNT(*) = 13 THEN 'OK' ELSE 'ERROR' END
 FROM sys.tables WHERE is_ms_shipped = 0 AND schema_id = SCHEMA_ID('dbo')
 UNION ALL
 SELECT 'Tablas DW', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) >= 7 THEN '✅ OK' ELSE '❌ ERROR' END
+       CASE WHEN COUNT(*) >= 7 THEN 'OK' ELSE 'ERROR' END
 FROM sys.tables WHERE schema_id = SCHEMA_ID('DW')
 UNION ALL
 SELECT 'Procedimientos', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) >= 15 THEN '✅ OK' ELSE '❌ ERROR' END
+       CASE WHEN COUNT(*) >= 15 THEN 'OK' ELSE 'ERROR' END
 FROM sys.procedures WHERE is_ms_shipped = 0
 UNION ALL
 SELECT 'Roles Seguridad', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) = 6 THEN '✅ OK' ELSE '❌ ERROR' END
+       CASE WHEN COUNT(*) = 6 THEN 'OK' ELSE 'ERROR' END
 FROM sys.database_principals WHERE type = 'R' AND name LIKE 'db_%';
 ```
 

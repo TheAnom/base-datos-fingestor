@@ -1,25 +1,11 @@
-/*
-================================================================================
-DATOS DE PRUEBA - SISTEMA EDUGESTOR
-================================================================================
-Descripción: Inserción de datos de ejemplo para testing y demostración
-Autor: Proyecto BDII
-Fecha: Noviembre 2024
-Prerrequisito: Ejecutar modelo_ER.sql primero
-================================================================================
-*/
+-- Datos de prueba para el sistema educativo
+-- Autor: Proyecto BDII
+-- Fecha: Noviembre 2024
 
--- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
-/*
-================================================================================
-INSERCIÓN DE DATOS MAESTROS
-================================================================================
-*/
-
--- Insertar grados académicos
+-- Insertamos los grados académicos básicos
 INSERT INTO grado (nombre, descripcion, nivel_educativo) VALUES
 ('Primero', 'Primer grado de primaria', 'Primaria'),
 ('Segundo', 'Segundo grado de primaria', 'Primaria'),
@@ -33,7 +19,7 @@ INSERT INTO grado (nombre, descripcion, nivel_educativo) VALUES
 ('Décimo', 'Décimo grado de bachillerato', 'Bachillerato'),
 ('Undécimo', 'Undécimo grado de bachillerato', 'Bachillerato');
 
--- Insertar profesores
+-- Profesores con sus especialidades
 INSERT INTO profesor (nombre_completo, documento_identidad, telefono, email, especialidad, titulo_academico, fecha_contratacion, salario_base) VALUES
 ('María González Pérez', '12345678', '555-0101', 'maria.gonzalez@edugestor.edu', 'Matemáticas', 'Licenciatura en Matemáticas', '2020-02-15', 2500000.00),
 ('Carlos Rodríguez López', '23456789', '555-0102', 'carlos.rodriguez@edugestor.edu', 'Ciencias Naturales', 'Licenciatura en Biología', '2019-08-20', 2400000.00),
@@ -43,7 +29,7 @@ INSERT INTO profesor (nombre_completo, documento_identidad, telefono, email, esp
 ('Roberto Vargas Solano', '67890123', '555-0106', 'roberto.vargas@edugestor.edu', 'Educación Física', 'Licenciatura en Educación Física', '2020-09-18', 2100000.00),
 ('Carmen Rojas Vega', '78901234', '555-0107', 'carmen.rojas@edugestor.edu', 'Artes', 'Licenciatura en Artes Plásticas', '2021-11-22', 2000000.00);
 
--- Insertar cursos
+-- Cursos que se van a dictar
 INSERT INTO curso (nombre, codigo_curso, descripcion, creditos, horas_semanales, profesor_id, grado_id, periodo_academico) VALUES
 ('Matemáticas Básicas', 'MAT101', 'Fundamentos de aritmética y álgebra básica', 4, 5, 1, 1, '2024-1'),
 ('Ciencias Naturales I', 'CIE101', 'Introducción a las ciencias naturales', 3, 4, 2, 1, '2024-1'),
@@ -57,7 +43,7 @@ INSERT INTO curso (nombre, codigo_curso, descripcion, creditos, horas_semanales,
 ('Educación Física', 'EDF101', 'Desarrollo físico y deportivo', 2, 3, 6, 1, '2024-1'),
 ('Artes Plásticas', 'ART101', 'Expresión artística y creatividad', 2, 2, 7, 1, '2024-1');
 
--- Insertar estudiantes
+-- Estudiantes de ejemplo
 INSERT INTO estudiante (nombre_completo, documento_identidad, telefono, email, fecha_nacimiento, direccion, grado_id, institucion) VALUES
 ('Juan Carlos Pérez Morales', 'E12345678', '555-1001', 'juan.perez@estudiante.edu', '2010-03-15', 'Calle 123 #45-67', 1, 'Colegio San José'),
 ('María Fernanda López García', 'E23456789', '555-1002', 'maria.lopez@estudiante.edu', '2010-07-22', 'Carrera 89 #12-34', 1, 'Colegio San José'),
@@ -70,7 +56,7 @@ INSERT INTO estudiante (nombre_completo, documento_identidad, telefono, email, f
 ('Diego Alejandro Morales Vega', 'E90123456', '555-1009', 'diego.morales@estudiante.edu', '2005-02-14', 'Avenida 567 #89-01', 6, 'Colegio San José'),
 ('Valentina Gómez Herrera', 'E01234567', '555-1010', 'valentina.gomez@estudiante.edu', '2005-06-03', 'Calle 678 #90-12', 6, 'Colegio San José');
 
--- Insertar conceptos de pago
+-- Conceptos por los que se puede pagar
 INSERT INTO concepto_pago (nombre, descripcion, monto_base, tipo_concepto, obligatorio) VALUES
 ('Matrícula Anual', 'Pago de matrícula para el año académico', 500000.00, 'INSCRIPCION', 1),
 ('Mensualidad', 'Pago mensual de pensión', 200000.00, 'MENSUALIDAD', 1),
@@ -80,7 +66,7 @@ INSERT INTO concepto_pago (nombre, descripcion, monto_base, tipo_concepto, oblig
 ('Material Didáctico', 'Costo de materiales y libros', 150000.00, 'OTROS', 1),
 ('Actividades Extracurriculares', 'Deportes, arte y otras actividades', 100000.00, 'OTROS', 0);
 
--- Insertar roles del sistema
+-- Roles básicos del sistema
 INSERT INTO rol (nombre, descripcion, nivel_acceso) VALUES
 ('Administrador', 'Acceso completo al sistema', 4),
 ('Coordinador Académico', 'Gestión académica y reportes', 3),
@@ -88,7 +74,7 @@ INSERT INTO rol (nombre, descripcion, nivel_acceso) VALUES
 ('Profesor', 'Acceso a calificaciones de sus cursos', 2),
 ('Consulta', 'Solo lectura de información básica', 1);
 
--- Insertar permisos del sistema
+-- Permisos que se pueden asignar
 INSERT INTO permiso (nombre, descripcion, modulo, operacion) VALUES
 ('Ver Estudiantes', 'Consultar información de estudiantes', 'ACADEMICO', 'SELECT'),
 ('Crear Estudiantes', 'Registrar nuevos estudiantes', 'ACADEMICO', 'INSERT'),
@@ -103,7 +89,7 @@ INSERT INTO permiso (nombre, descripcion, modulo, operacion) VALUES
 ('Ver Reportes', 'Acceso a reportes del sistema', 'REPORTES', 'SELECT'),
 ('Ejecutar Procedimientos', 'Ejecutar procedimientos almacenados', 'ACADEMICO', 'EXECUTE');
 
--- Insertar usuarios del sistema
+-- Usuarios de ejemplo para el sistema
 INSERT INTO usuario (nombre_usuario, nombre_completo, email, password_hash) VALUES
 ('admin', 'Administrador del Sistema', 'admin@edugestor.edu', 'hash_admin_password'),
 ('coord_academico', 'Coordinador Académico Principal', 'coordinador@edugestor.edu', 'hash_coord_password'),
@@ -112,112 +98,91 @@ INSERT INTO usuario (nombre_usuario, nombre_completo, email, password_hash) VALU
 ('prof_ciencias', 'Carlos Rodríguez López', 'carlos.rodriguez@edugestor.edu', 'hash_prof_cie_password'),
 ('consulta_general', 'Usuario de Consulta', 'consulta@edugestor.edu', 'hash_consulta_password');
 
-PRINT 'Datos maestros insertados exitosamente';
-GO/*
-====
-============================================================================
-INSERCIÓN DE DATOS TRANSACCIONALES
-================================================================================
-*/
+PRINT 'Datos maestros insertados correctamente';
+GO
 
--- Asignar roles a usuarios
+-- Ahora vamos con los datos transaccionales
+
+-- Asignamos roles a los usuarios
 INSERT INTO usuario_rol (usuario_id, rol_id) VALUES
-(1, 1), -- admin -> Administrador
-(2, 2), -- coord_academico -> Coordinador Académico
-(3, 3), -- secretaria1 -> Secretario
-(4, 4), -- prof_matematicas -> Profesor
-(5, 4), -- prof_ciencias -> Profesor
-(6, 5); -- consulta_general -> Consulta
+(1, 1), -- admin es administrador
+(2, 2), -- coordinador académico
+(3, 3), -- secretaria
+(4, 4), -- profesor de matemáticas
+(5, 4), -- profesor de ciencias
+(6, 5); -- usuario de consulta
 
--- Asignar permisos a roles
--- Administrador: todos los permisos
+-- Le damos permisos a cada rol
+-- El admin puede hacer todo
 INSERT INTO permiso_rol (rol_id, permiso_id) VALUES
 (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12);
 
--- Coordinador Académico: permisos académicos y reportes
+-- El coordinador maneja lo académico y ve reportes
 INSERT INTO permiso_rol (rol_id, permiso_id) VALUES
 (2, 1), (2, 2), (2, 3), (2, 5), (2, 6), (2, 7), (2, 11), (2, 12);
 
--- Secretario: estudiantes y pagos
+-- La secretaria maneja estudiantes y pagos
 INSERT INTO permiso_rol (rol_id, permiso_id) VALUES
 (3, 1), (3, 2), (3, 3), (3, 7), (3, 8);
 
--- Profesor: solo calificaciones de sus cursos
+-- Los profesores solo ven y califican
 INSERT INTO permiso_rol (rol_id, permiso_id) VALUES
 (4, 1), (4, 5), (4, 6);
 
--- Consulta: solo lectura
+-- Usuario de consulta solo ve cosas básicas
 INSERT INTO permiso_rol (rol_id, permiso_id) VALUES
 (5, 1), (5, 5), (5, 7), (5, 11);
 
--- Asignar estudiantes a cursos (matrícula)
+-- Matriculamos estudiantes en cursos
 -- Estudiantes de primer grado
 INSERT INTO asignacion_curso (estudiante_id, curso_id) VALUES
--- Juan Carlos Pérez (estudiante 1) - Primer grado
-(1, 1), -- Matemáticas Básicas
-(1, 2), -- Ciencias Naturales I
-(1, 3), -- Español y Comunicación
-(1, 4), -- Ciencias Sociales I
-(1, 9), -- Inglés Básico
-(1, 10), -- Educación Física
-(1, 11), -- Artes Plásticas
-
--- María Fernanda López (estudiante 2) - Primer grado
+-- Juan Carlos en todas las materias de primero
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 9), (1, 10), (1, 11),
+-- María Fernanda también
 (2, 1), (2, 2), (2, 3), (2, 4), (2, 9), (2, 10), (2, 11),
-
--- Carlos Andrés Rodríguez (estudiante 3) - Primer grado
+-- Carlos Andrés igual
 (3, 1), (3, 2), (3, 3), (3, 4), (3, 9), (3, 10), (3, 11),
-
--- Ana Sofía Martínez (estudiante 4) - Primer grado
+-- Ana Sofía también
 (4, 1), (4, 2), (4, 3), (4, 4), (4, 9), (4, 10), (4, 11),
-
--- Luis Miguel Hernández (estudiante 5) - Primer grado
+-- Luis Miguel igual
 (5, 1), (5, 2), (5, 3), (5, 4), (5, 9), (5, 10), (5, 11);
 
 -- Estudiantes de sexto grado
 INSERT INTO asignacion_curso (estudiante_id, curso_id) VALUES
--- Patricia Elena Jiménez (estudiante 6) - Sexto grado
-(6, 5), -- Matemáticas Intermedias
-(6, 6), -- Biología General
-(6, 7), -- Literatura Española
-(6, 8), -- Historia Universal
-
--- Roberto José Vargas (estudiante 7) - Sexto grado
+-- Patricia en materias de sexto
+(6, 5), (6, 6), (6, 7), (6, 8),
+-- Roberto también
 (7, 5), (7, 6), (7, 7), (7, 8),
-
--- Carmen Lucía Rojas (estudiante 8) - Sexto grado
+-- Carmen igual
 (8, 5), (8, 6), (8, 7), (8, 8),
-
--- Diego Alejandro Morales (estudiante 9) - Sexto grado
+-- Diego también
 (9, 5), (9, 6), (9, 7), (9, 8),
-
--- Valentina Gómez (estudiante 10) - Sexto grado
+-- Valentina igual
 (10, 5), (10, 6), (10, 7), (10, 8);
 
--- Insertar calificaciones de ejemplo
--- Calificaciones para estudiantes de primer grado
+-- Ponemos algunas calificaciones de ejemplo
 INSERT INTO calificacion (asignacion_curso_id, nota_parcial1, nota_parcial2, nota_parcial3, nota_final, estado_calificacion) VALUES
--- Juan Carlos Pérez
-(1, 85.5, 88.0, 90.5, 88.0, 'APROBADO'),   -- Matemáticas
-(2, 92.0, 89.5, 91.0, 90.8, 'APROBADO'),   -- Ciencias
-(3, 78.5, 82.0, 85.5, 82.0, 'APROBADO'),   -- Español
-(4, 88.0, 85.5, 87.0, 86.8, 'APROBADO'),   -- Sociales
+-- Juan Carlos - buen estudiante
+(1, 85.5, 88.0, 90.5, 88.0, 'APROBADO'),
+(2, 92.0, 89.5, 91.0, 90.8, 'APROBADO'),
+(3, 78.5, 82.0, 85.5, 82.0, 'APROBADO'),
+(4, 88.0, 85.5, 87.0, 86.8, 'APROBADO'),
 
--- María Fernanda López
-(8, 95.0, 92.5, 94.0, 93.8, 'APROBADO'),   -- Matemáticas
-(9, 89.5, 91.0, 88.5, 89.7, 'APROBADO'),   -- Ciencias
-(10, 87.0, 89.5, 92.0, 89.5, 'APROBADO'),  -- Español
-(11, 91.5, 88.0, 90.0, 89.8, 'APROBADO'),  -- Sociales
+-- María Fernanda - excelente estudiante
+(8, 95.0, 92.5, 94.0, 93.8, 'APROBADO'),
+(9, 89.5, 91.0, 88.5, 89.7, 'APROBADO'),
+(10, 87.0, 89.5, 92.0, 89.5, 'APROBADO'),
+(11, 91.5, 88.0, 90.0, 89.8, 'APROBADO'),
 
--- Carlos Andrés Rodríguez
-(15, 76.0, 78.5, 82.0, 78.8, 'APROBADO'),  -- Matemáticas
-(16, 83.5, 80.0, 85.5, 83.0, 'APROBADO'),  -- Ciencias
-(17, 79.0, 81.5, 84.0, 81.5, 'APROBADO'),  -- Español
-(18, 85.0, 82.5, 87.5, 85.0, 'APROBADO');  -- Sociales
+-- Carlos Andrés - estudiante promedio
+(15, 76.0, 78.5, 82.0, 78.8, 'APROBADO'),
+(16, 83.5, 80.0, 85.5, 83.0, 'APROBADO'),
+(17, 79.0, 81.5, 84.0, 81.5, 'APROBADO'),
+(18, 85.0, 82.5, 87.5, 85.0, 'APROBADO');
 
--- Registrar algunos pagos
+-- Registramos algunos pagos
 INSERT INTO pago (concepto_pago_id, estudiante_id, usuario_id, monto, fecha_pago, metodo_pago, numero_recibo) VALUES
--- Matrículas 2024
+-- Matrículas del año
 (1, 1, 3, 500000.00, '2024-01-15', 'TRANSFERENCIA', 'REC-2024-001'),
 (1, 2, 3, 500000.00, '2024-01-16', 'EFECTIVO', 'REC-2024-002'),
 (1, 3, 3, 500000.00, '2024-01-17', 'TARJETA', 'REC-2024-003'),
@@ -229,14 +194,14 @@ INSERT INTO pago (concepto_pago_id, estudiante_id, usuario_id, monto, fecha_pago
 (1, 9, 3, 500000.00, '2024-01-23', 'TRANSFERENCIA', 'REC-2024-009'),
 (1, 10, 3, 500000.00, '2024-01-24', 'TARJETA', 'REC-2024-010'),
 
--- Mensualidades de febrero
+-- Algunas mensualidades
 (2, 1, 3, 200000.00, '2024-02-05', 'EFECTIVO', 'REC-2024-011'),
 (2, 2, 3, 200000.00, '2024-02-06', 'TRANSFERENCIA', 'REC-2024-012'),
 (2, 3, 3, 200000.00, '2024-02-07', 'TARJETA', 'REC-2024-013'),
 (2, 4, 3, 200000.00, '2024-02-08', 'EFECTIVO', 'REC-2024-014'),
 (2, 5, 3, 200000.00, '2024-02-09', 'TRANSFERENCIA', 'REC-2024-015'),
 
--- Mensualidades de marzo
+-- Más mensualidades
 (2, 1, 3, 200000.00, '2024-03-05', 'TRANSFERENCIA', 'REC-2024-016'),
 (2, 2, 3, 200000.00, '2024-03-06', 'EFECTIVO', 'REC-2024-017'),
 (2, 6, 3, 200000.00, '2024-03-07', 'TARJETA', 'REC-2024-018'),
@@ -249,22 +214,14 @@ INSERT INTO pago (concepto_pago_id, estudiante_id, usuario_id, monto, fecha_pago
 (6, 6, 3, 150000.00, '2024-02-01', 'TARJETA', 'REC-2024-023'),
 (6, 7, 3, 150000.00, '2024-02-02', 'EFECTIVO', 'REC-2024-024'),
 
--- Seguro estudiantil
+-- Seguros estudiantiles
 (5, 1, 3, 75000.00, '2024-02-15', 'TRANSFERENCIA', 'REC-2024-025'),
 (5, 2, 3, 75000.00, '2024-02-16', 'EFECTIVO', 'REC-2024-026'),
 (5, 3, 3, 75000.00, '2024-02-17', 'TARJETA', 'REC-2024-027'),
 (5, 6, 3, 75000.00, '2024-02-18', 'TRANSFERENCIA', 'REC-2024-028'),
 (5, 7, 3, 75000.00, '2024-02-19', 'EFECTIVO', 'REC-2024-029');
 
-/*
-================================================================================
-CONSULTAS DE VERIFICACIÓN
-================================================================================
-*/
-
--- Verificar estructura de datos insertados
-PRINT 'Verificando datos insertados...';
-
+-- Verificamos que todo se haya insertado bien
 SELECT 'Grados' as Tabla, COUNT(*) as Total FROM grado
 UNION ALL
 SELECT 'Profesores', COUNT(*) FROM profesor
@@ -287,6 +244,5 @@ SELECT 'Roles', COUNT(*) FROM rol
 UNION ALL
 SELECT 'Permisos', COUNT(*) FROM permiso;
 
-PRINT 'Datos de prueba insertados exitosamente';
-PRINT 'El sistema está listo para pruebas y desarrollo';
+PRINT 'Listo! Todos los datos de prueba están cargados';
 GO
