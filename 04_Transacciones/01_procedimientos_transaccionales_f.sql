@@ -1,25 +1,9 @@
-    -- ================================================================================
-    -- PROCEDIMIENTOS ALMACENADOS TRANSACCIONALES - SISTEMA EDUGESTOR
-    -- ================================================================================
-    -- Descripción: Implementación de lógica de negocio con control de transacciones,
-    --              manejo de errores y validaciones de integridad
-    -- Autor: Proyecto BDII
-    -- Fecha: Noviembre 2024
-    -- Características: TRY...CATCH, COMMIT/ROLLBACK, SAVEPOINT, validaciones de negocio
-    -- ================================================================================
+-- procedimientos transaccionales del sistema
+USE BD2_Curso2025;
+GO
 
-    -- Configuración inicial - Conectar a base de datos del curso
-    USE BD2_Curso2025;
-    GO
-
-    -- ================================================================================
-    -- PROCEDIMIENTO: MATRICULAR ESTUDIANTE EN CURSO
-    -- ================================================================================
-    -- Funcionalidad: Matricula un estudiante en un curso con validaciones completas
-    -- Control de transacciones: SAVEPOINT para rollback parcial
-    -- Validaciones: Capacidad, prerrequisitos, conflictos de horario
-
-    CREATE OR ALTER PROCEDURE sp_MatricularEstudiante
+-- matricular estudiante en curso
+CREATE OR ALTER PROCEDURE sp_MatricularEstudiante
         @EstudianteId INT,
         @CursoId INT,
         @UsuarioId INT,
@@ -28,7 +12,6 @@
     BEGIN
         SET NOCOUNT ON;
         
-        -- Variables de control
         DECLARE @ErrorMessage NVARCHAR(500);
         DECLARE @AsignacionId INT;
         DECLARE @GradoEstudiante INT;
@@ -36,12 +19,12 @@
         DECLARE @EstadoEstudiante NVARCHAR(20);
         DECLARE @EstadoCurso NVARCHAR(20);
         DECLARE @MatriculasActuales INT;
-        DECLARE @CapacidadMaxima INT = 30; -- Capacidad máxima por curso
+        DECLARE @CapacidadMaxima INT = 30;
         
         BEGIN TRANSACTION;
         
         BEGIN TRY
-            -- VALIDACIÓN 1: Verificar que el estudiante existe y está activo
+            -- verificar que el estudiante existe y esta activo
             SELECT @GradoEstudiante = grado_id, @EstadoEstudiante = estado
             FROM estudiante 
             WHERE estudiante_id = @EstudianteId;
@@ -54,7 +37,7 @@
             
             IF @EstadoEstudiante != 'ACTIVO'
             BEGIN
-                SET @ErrorMessage = 'Error: El estudiante no está en estado ACTIVO. Estado actual: ' + @EstadoEstudiante;
+                SET @ErrorMessage = 'Error: El estudiante no esta activo';
                 THROW 50002, @ErrorMessage, 1;
             END
             
@@ -152,10 +135,8 @@
     END
     GO
 
-    -- ================================================================================
-    -- PROCEDIMIENTO: REGISTRAR PAGO CON VALIDACIONES FINANCIERAS
-    -- ================================================================================
-    -- Funcionalidad: Registra un pago con validaciones de negocio y control de duplicados
+        -- PROCEDIMIENTO: REGISTRAR PAGO CON VALIDACIONES FINANCIERAS
+        -- Funcionalidad: Registra un pago con validaciones de negocio y control de duplicados
     -- Control de transacciones: Múltiples SAVEPOINT para control granular
     -- Validaciones: Montos, duplicados, estado del estudiante
 
@@ -321,10 +302,8 @@
     END
     GO
 
-    -- ================================================================================
-    -- PROCEDIMIENTO: ACTUALIZAR CALIFICACIONES CON VALIDACIONES ACADÉMICAS
-    -- ================================================================================
-    -- Funcionalidad: Actualiza calificaciones con cálculos automáticos y validaciones
+        -- PROCEDIMIENTO: ACTUALIZAR CALIFICACIONES CON VALIDACIONES ACADÉMICAS
+        -- Funcionalidad: Actualiza calificaciones con cálculos automáticos y validaciones
     -- Control de transacciones: Control de concurrencia y validaciones de negocio
     -- Validaciones: Rangos de notas, permisos del profesor, fechas límite
 
@@ -520,13 +499,10 @@
     END
     GO
 
-    -- ================================================================================
-    -- PROCEDIMIENTO: PROCESO BATCH - CIERRE DE PERÍODO ACADÉMICO
-    -- ================================================================================
-    -- Funcionalidad: Procesa el cierre masivo de un período con múltiples validaciones
+        -- PROCEDIMIENTO: PROCESO BATCH - CIERRE DE PERÍODO ACADÉMICO
+        -- Funcionalidad: Procesa el cierre masivo de un período con múltiples validaciones
     -- Control de transacciones: Transacciones anidadas con múltiples SAVEPOINT
-    -- Características: Procesamiento por lotes, manejo de errores masivos, rollback selectivo
-
+    
     CREATE OR ALTER PROCEDURE sp_CerrarPeriodoAcademico
         @PeriodoAcademico NVARCHAR(20),
         @UsuarioId INT,

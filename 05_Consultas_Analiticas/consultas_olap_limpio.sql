@@ -1,24 +1,11 @@
--- ================================================================================
 -- CONSULTAS ANALÍTICAS OLAP - SISTEMA EDUGESTOR
--- ================================================================================
--- Descripción: Consultas multidimensionales para análisis de datos educativos
 --              con agregaciones, jerarquías y drill-down capabilities
--- Autor: Proyecto BDII
--- Fecha: Noviembre 2024
--- Características: Window functions, CTEs, agregaciones complejas, jerarquías
--- ================================================================================
 
 -- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
--- ================================================================================
 -- CONSULTA OLAP 1: ANÁLISIS DE RENDIMIENTO ACADÉMICO POR JERARQUÍAS TEMPORALES
--- ================================================================================
--- Propósito: Analizar el rendimiento estudiantil con drill-down temporal
--- Jerarquías: Año > Trimestre > Mes > Día
--- Métricas: Promedios, tasas de aprobación, distribución de notas
--- Valor de negocio: Identificar tendencias de rendimiento y períodos críticos
 
 -- Consulta principal con múltiples niveles de agregación
 WITH RendimientoTemporal AS (
@@ -131,15 +118,15 @@ SELECT
     
     -- Indicadores de alerta
     CASE 
-        WHEN tasa_aprobacion < 70 THEN '🔴 CRÍTICO'
-        WHEN tasa_aprobacion < 80 THEN '🟡 ATENCIÓN'
-        ELSE '🟢 NORMAL'
+        WHEN tasa_aprobacion < 70 THEN ' CRÍTICO'
+        WHEN tasa_aprobacion < 80 THEN ' ATENCIÓN'
+        ELSE ' NORMAL'
     END as 'Estado Rendimiento',
     
     CASE 
-        WHEN promedio_dias_calificar > 15 THEN '⚠️ RETRASO'
-        WHEN promedio_dias_calificar > 10 THEN '⏰ LENTO'
-        ELSE '✅ OPORTUNO'
+        WHEN promedio_dias_calificar > 15 THEN ' RETRASO'
+        WHEN promedio_dias_calificar > 10 THEN ' LENTO'
+        ELSE ' OPORTUNO'
     END as 'Estado Calificación'
 
 FROM PromediosComparativos
@@ -149,11 +136,8 @@ ORDER BY año DESC, mes DESC, nivel_educativo, promedio_general DESC;
 PRINT 'Consulta OLAP 1: Análisis de Rendimiento Académico completada';
 PRINT 'Jerarquías: Temporal (Año>Trimestre>Mes) y Educativa (Nivel>Grado)';
 PRINT 'Métricas: Promedios, tasas, distribuciones, tendencias y alertas';
-GO-- ====
-============================================================================
+GO============================================================================
 -- VISTA RESUMEN: DASHBOARD EJECUTIVO CON KPIS PRINCIPALES
--- ================================================================================
--- Propósito: Vista consolidada para dashboard ejecutivo con KPIs críticos
 -- Actualización: Datos en tiempo real del sistema transaccional y analítico
 
 CREATE OR ALTER VIEW vw_DashboardEjecutivo AS

@@ -64,23 +64,23 @@ Las instituciones educativas requieren:
 
 ---
 
-## 3. 🏗️ ALCANCE Y ARQUITECTURA
+## 3.  ALCANCE Y ARQUITECTURA
 
 ### Módulos del Sistema
 
-#### 📚 1. GESTIÓN ACADÉMICA
+####  1. GESTIÓN ACADÉMICA
 - **Estudiantes:** Datos personales, académicos y de contacto
 - **Profesores:** Información profesional, especialidades y títulos
 - **Cursos:** Materias, créditos, horarios y períodos académicos
 - **Asignaciones:** Matrículas y relaciones estudiante-curso
 - **Calificaciones:** Evaluaciones, notas parciales y finales
 
-#### 💰 2. GESTIÓN FINANCIERA
+####  2. GESTIÓN FINANCIERA
 - **Conceptos de Pago:** Inscripciones, mensualidades, exámenes, certificados
 - **Transacciones:** Registro de pagos con métodos y recibos
 - **Control Financiero:** Auditoría y trazabilidad de movimientos
 
-#### 🔐 3. SEGURIDAD Y AUTENTICACIÓN
+####  3. SEGURIDAD Y AUTENTICACIÓN
 - **Usuarios del Sistema:** Credenciales y perfiles de acceso
 - **Roles Funcionales:** Niveles de acceso por responsabilidad
 - **Permisos Granulares:** Control detallado por objeto y operación
@@ -104,23 +104,23 @@ erDiagram
 
 ---
 
-## 4. 📊 FUENTE DE DATOS Y VOLUMEN
+## 4.  FUENTE DE DATOS Y VOLUMEN
 
 ### Tipos de Información
 
-#### 📋 Datos Maestros (Relativamente Estáticos)
+####  Datos Maestros (Relativamente Estáticos)
 - **Estudiantes:** Información personal y académica
 - **Profesores:** Datos profesionales y especialidades
 - **Cursos:** Catálogo de materias y programas
 - **Conceptos de Pago:** Tipos y categorías financieras
 
-#### 🔄 Datos Transaccionales (Alta Frecuencia)
+####  Datos Transaccionales (Alta Frecuencia)
 - **Asignaciones:** Matrículas por período académico
 - **Calificaciones:** Evaluaciones y notas continuas
 - **Pagos:** Transacciones financieras diarias
 - **Auditoría:** Logs de acceso y modificaciones
 
-#### 📈 Datos Analíticos (Procesados)
+####  Datos Analíticos (Procesados)
 - **Métricas de Rendimiento:** Promedios, tasas de aprobación
 - **Tendencias Financieras:** Patrones de pago, morosidad
 - **Estadísticas Académicas:** Análisis por profesor, curso, período
@@ -138,18 +138,18 @@ erDiagram
 
 ---
 
-## 5. 🏛️ ARQUITECTURA TÉCNICA PROPUESTA
+## 5.  ARQUITECTURA TÉCNICA PROPUESTA
 
 ### Componente Transaccional (OLTP)
 
-#### 🗄️ Modelo Relacional
+####  Modelo Relacional
 - **Normalización:** Tercera Forma Normal (3FN) para eliminar redundancia
 - **Integridad:** Claves primarias, foráneas y restricciones de dominio
 - **Procedimientos:** T-SQL avanzado con control de flujo y errores
 - **Transacciones:** ACID completo con COMMIT/ROLLBACK/SAVEPOINT
 - **Índices:** Optimización para consultas frecuentes y operaciones críticas
 
-#### ⚡ Características de Rendimiento
+####  Características de Rendimiento
 ```sql
 -- Ejemplo de control transaccional implementado
 BEGIN TRANSACTION;
@@ -163,14 +163,14 @@ BEGIN TRANSACTION;
 
 ### Componente Analítico (OLAP)
 
-#### 📊 Modelo Dimensional
+####  Modelo Dimensional
 - **Arquitectura:** Esquema estrella para máximo rendimiento
 - **Tablas de Hechos:** FactCalificaciones, FactPagos
 - **Dimensiones:** DimTiempo, DimEstudiante, DimCurso, DimConceptoPago, DimUsuario
 - **Jerarquías:** Temporales (Año>Trimestre>Mes) y Académicas (Nivel>Grado>Estudiante)
 - **SCD:** Slowly Changing Dimensions Tipo 2 para historial completo
 
-#### 🔄 Proceso ETL
+####  Proceso ETL
 ```sql
 -- Ejemplo de carga dimensional con SCD Tipo 2
 EXEC DW.sp_CargarDimEstudiante; -- Maneja cambios históricos
@@ -179,13 +179,13 @@ EXEC DW.sp_CargarFactCalificaciones @FechaInicio, @FechaFin;
 
 ### Sistema de Seguridad
 
-#### 🛡️ Arquitectura RBAC (Role-Based Access Control)
+####  Arquitectura RBAC (Role-Based Access Control)
 - **Autenticación:** SQL Server integrada con Active Directory
 - **Autorización:** 6 roles funcionales con permisos específicos
 - **Auditoría:** Triggers automáticos en tablas críticas
 - **Principio:** Menor privilegio - acceso mínimo necesario
 
-#### 🔐 Matriz de Roles Propuesta
+####  Matriz de Roles Propuesta
 
 | Rol | Nivel | Permisos Principales |
 |-----|-------|---------------------|
@@ -198,7 +198,7 @@ EXEC DW.sp_CargarFactCalificaciones @FechaInicio, @FechaFin;
 
 ---
 
-## 6. 📅 CRONOGRAMA DE DESARROLLO
+## 6.  CRONOGRAMA DE DESARROLLO
 
 ### Fases de Implementación
 
@@ -213,44 +213,44 @@ EXEC DW.sp_CargarFactCalificaciones @FechaInicio, @FechaFin;
 
 ### Hitos Críticos
 
-- ✅ **Semana 7:** Modelo transaccional funcional con datos de prueba
-- ✅ **Semana 8:** Data Warehouse operativo con primeras cargas ETL
-- ✅ **Semana 12:** Procedimientos transaccionales completamente probados
-- ✅ **Semana 13:** Sistema de seguridad implementado y auditado
-- ✅ **Semana 14:** Optimización completada con métricas de mejora
-- ✅ **Semana 17:** Proyecto completo documentado y presentado
+-  **Semana 7:** Modelo transaccional funcional con datos de prueba
+-  **Semana 8:** Data Warehouse operativo con primeras cargas ETL
+-  **Semana 12:** Procedimientos transaccionales completamente probados
+-  **Semana 13:** Sistema de seguridad implementado y auditado
+-  **Semana 14:** Optimización completada con métricas de mejora
+-  **Semana 17:** Proyecto completo documentado y presentado
 
 ---
 
-## 7. ✅ CRITERIOS DE ÉXITO
+## 7.  CRITERIOS DE ÉXITO
 
 ### Criterios Técnicos
 
-#### 🗄️ Modelo Relacional
+####  Modelo Relacional
 - [ ] **13 tablas normalizadas** en Tercera Forma Normal
 - [ ] **Integridad referencial completa** sin datos huérfanos
 - [ ] **Restricciones de dominio** implementadas y probadas
 - [ ] **Datos de prueba realistas** para validación funcional
 
-#### 📊 Modelo Dimensional
+####  Modelo Dimensional
 - [ ] **Esquema estrella funcional** con 5 dimensiones + 2 hechos
 - [ ] **Jerarquías implementadas** con capacidad de drill-down
 - [ ] **SCD Tipo 2 operativo** para manejo de cambios históricos
 - [ ] **Consultas OLAP efectivas** con agregaciones complejas
 
-#### ⚙️ Procedimientos Transaccionales
+####  Procedimientos Transaccionales
 - [ ] **4+ procedimientos robustos** con validaciones de negocio
 - [ ] **Control de transacciones completo** (COMMIT/ROLLBACK/SAVEPOINT)
 - [ ] **Manejo de errores avanzado** con TRY...CATCH y logging
 - [ ] **Pruebas de concurrencia** exitosas sin deadlocks
 
-#### 🔐 Sistema de Seguridad
+####  Sistema de Seguridad
 - [ ] **6 roles implementados** con permisos granulares
 - [ ] **Auditoría automática** en tablas críticas
 - [ ] **Principio de menor privilegio** aplicado consistentemente
 - [ ] **Trazabilidad completa** de accesos y modificaciones
 
-#### ⚡ Optimización
+####  Optimización
 - [ ] **10+ índices estratégicos** con mejoras medibles
 - [ ] **Planes de ejecución optimizados** documentados
 - [ ] **Procedimientos de mantenimiento** automatizados
@@ -258,13 +258,13 @@ EXEC DW.sp_CargarFactCalificaciones @FechaInicio, @FechaFin;
 
 ### Criterios de Calidad
 
-#### 📚 Documentación
+####  Documentación
 - [ ] **Documentación técnica completa** con diagramas ER y dimensional
 - [ ] **Guías de instalación** paso a paso verificables
 - [ ] **Comentarios en código** explicando lógica compleja
 - [ ] **Casos de uso documentados** con ejemplos prácticos
 
-#### 🎯 Funcionalidad
+####  Funcionalidad
 - [ ] **Casos de uso críticos** implementados y probados
 - [ ] **Validaciones de negocio** correctas y completas
 - [ ] **Reportes analíticos** que generen valor empresarial
@@ -282,23 +282,23 @@ EXEC DW.sp_CargarFactCalificaciones @FechaInicio, @FechaFin;
 
 ---
 
-## 8. 🚀 VALOR ESPERADO Y BENEFICIOS
+## 8.  VALOR ESPERADO Y BENEFICIOS
 
 ### Beneficios Técnicos
 
-- **🏗️ Arquitectura Escalable:** Diseño que soporta crecimiento institucional
-- **⚡ Alto Rendimiento:** Optimización que reduce tiempos de respuesta en 60%+
-- **🔒 Seguridad Robusta:** Protección multicapa de información sensible
-- **📊 Capacidad Analítica:** Insights para toma de decisiones estratégicas
-- **🔧 Mantenibilidad:** Código documentado y procedimientos automatizados
+- ** Arquitectura Escalable:** Diseño que soporta crecimiento institucional
+- ** Alto Rendimiento:** Optimización que reduce tiempos de respuesta en 60%+
+- ** Seguridad Robusta:** Protección multicapa de información sensible
+- ** Capacidad Analítica:** Insights para toma de decisiones estratégicas
+- ** Mantenibilidad:** Código documentado y procedimientos automatizados
 
 ### Beneficios de Negocio
 
-- **💰 Reducción de Costos:** Automatización de procesos manuales
-- **📈 Mejora en Toma de Decisiones:** Reportes analíticos en tiempo real
-- **🎯 Eficiencia Operativa:** Procesos integrados y optimizados
-- **✅ Cumplimiento Normativo:** Auditoría y trazabilidad completa
-- **🚀 Ventaja Competitiva:** Tecnología de vanguardia en gestión educativa
+- ** Reducción de Costos:** Automatización de procesos manuales
+- ** Mejora en Toma de Decisiones:** Reportes analíticos en tiempo real
+- ** Eficiencia Operativa:** Procesos integrados y optimizados
+- ** Cumplimiento Normativo:** Auditoría y trazabilidad completa
+- ** Ventaja Competitiva:** Tecnología de vanguardia en gestión educativa
 
 ### Aprendizajes Técnicos Demostrados
 

@@ -1,6 +1,4 @@
 -- Datos de prueba para el sistema educativo
--- Autor: Proyecto BDII
--- Fecha: Noviembre 2024
 
 USE BD2_Curso2025;
 GO

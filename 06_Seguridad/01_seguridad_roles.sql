@@ -1,69 +1,10 @@
-/*
-================================================================================
-SISTEMA DE SEGURIDAD BASADO EN ROLES - EDUGESTOR
-================================================================================
-Descripción: Implementación completa de seguridad con roles, usuarios y permisos
-             granulares siguiendo el principio de menor privilegio
-Autor: Proyecto BDII
-Fecha: Noviembre 2024
-Características: RBAC, usuarios de BD, esquemas de seguridad, auditoría
-================================================================================
-*/
+
 
 -- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
-/*
-================================================================================
-CREACIÓN DE ROLES DE BASE DE DATOS
-================================================================================
-Estrategia: Roles específicos por funcionalidad con permisos granulares
-Principio: Menor privilegio - cada rol solo tiene los permisos mínimos necesarios
-*/
 
--- Verificar y crear roles de base de datos si no existen
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_administrador_edugestor' AND type = 'R')
-BEGIN
-    CREATE ROLE db_administrador_edugestor;
-    PRINT 'Rol db_administrador_edugestor creado';
-END
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_coordinador_academico' AND type = 'R')
-BEGIN
-    CREATE ROLE db_coordinador_academico;
-    PRINT 'Rol db_coordinador_academico creado';
-END
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_secretario_financiero' AND type = 'R')
-BEGIN
-    CREATE ROLE db_secretario_financiero;
-    PRINT 'Rol db_secretario_financiero creado';
-END
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_profesor' AND type = 'R')
-BEGIN
-    CREATE ROLE db_profesor;
-    PRINT 'Rol db_profesor creado';
-END
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_consulta_general' AND type = 'R')
-BEGIN
-    CREATE ROLE db_consulta_general;
-    PRINT 'Rol db_consulta_general creado';
-END
-
-IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_analista_datos' AND type = 'R')
-BEGIN
-    CREATE ROLE db_analista_datos;
-    PRINT 'Rol db_analista_datos creado';
-END
-
-/*
-================================================================================
-ASIGNACIÓN DE PERMISOS POR ROL
-================================================================================
-*/
 
 -- ROL: ADMINISTRADOR EDUGESTOR
 -- Permisos: Control total sobre el sistema (excepto sistema)
@@ -229,96 +170,7 @@ GRANT SELECT ON vw_DashboardEjecutivo TO db_analista_datos;
 
 PRINT 'Permisos de analista de datos configurados correctamente';
 
-/*
-================================================================================
-CREACIÓN DE USUARIOS DE BASE DE DATOS
-================================================================================
-Estrategia: Usuarios específicos mapeados a logins de SQL Server
-Nota: En producción, estos usuarios se crearían con logins reales
-*/
 
--- Función para crear usuario si no existe
-CREATE OR ALTER PROCEDURE sp_CrearUsuarioSiNoExiste
-    @NombreUsuario NVARCHAR(50),
-    @RolAsignado NVARCHAR(50)
-AS
-BEGIN
-    DECLARE @SQL NVARCHAR(500);
-    
-    -- Verificar si el usuario existe
-    IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = @NombreUsuario AND type = 'S')
-    BEGIN
-        -- Crear usuario sin login (para demostración)
-        SET @SQL = 'CREATE USER [' + @NombreUsuario + '] WITHOUT LOGIN';
-        EXEC sp_executesql @SQL;
-        PRINT 'Usuario ' + @NombreUsuario + ' creado';
-        
-        -- Asignar al rol
-        SET @SQL = 'ALTER ROLE [' + @RolAsignado + '] ADD MEMBER [' + @NombreUsuario + ']';
-        EXEC sp_executesql @SQL;
-        PRINT 'Usuario ' + @NombreUsuario + ' asignado al rol ' + @RolAsignado;
-    END
-    ELSE
-    BEGIN
-        PRINT 'Usuario ' + @NombreUsuario + ' ya existe';
-    END
-END
-GO
-
--- Crear usuarios del sistema
-EXEC sp_CrearUsuarioSiNoExiste 'admin_sistema', 'db_administrador_edugestor';
-EXEC sp_CrearUsuarioSiNoExiste 'coord_academico_principal', 'db_coordinador_academico';
-EXEC sp_CrearUsuarioSiNoExiste 'secretaria_financiera', 'db_secretario_financiero';
-EXEC sp_CrearUsuarioSiNoExiste 'prof_matematicas', 'db_profesor';
-EXEC sp_CrearUsuarioSiNoExiste 'prof_ciencias', 'db_profesor';
-EXEC sp_CrearUsuarioSiNoExiste 'consulta_reportes', 'db_consulta_general';
-EXEC sp_CrearUsuarioSiNoExiste 'analista_bi', 'db_analista_datos';
-
-/*
-================================================================================
-IMPLEMENTACIÓN DE ROW LEVEL SECURITY (RLS)
-================================================================================
-Propósito: Los profesores solo pueden ver/editar calificaciones de sus cursos
-*/
-
--- Función de seguridad para profesores
-CREATE OR ALTER FUNCTION dbo.fn_SeguridadProfesor(@ProfesorId INT)
-RETURNS TABLE
-WITH SCHEMABINDING
-AS
-RETURN (
-    SELECT 1 AS fn_securitypredicate_result
-    WHERE 
-        -- Permitir acceso si es administrador o coordinador
-        IS_MEMBER('db_administrador_edugestor') = 1 
-        OR IS_MEMBER('db_coordinador_academico') = 1
-        OR IS_MEMBER('db_secretario_financiero') = 1
-        OR IS_MEMBER('db_consulta_general') = 1
-        OR IS_MEMBER('db_analista_datos') = 1
-        -- O si es profesor y el curso le pertenece
-        OR (
-            IS_MEMBER('db_profesor') = 1 
-            AND EXISTS (
-                SELECT 1 FROM dbo.curso c
-                INNER JOIN dbo.asignacion_curso ac ON c.curso_id = ac.curso_id
-                WHERE c.profesor_id = @ProfesorId
-            )
-        )
-);
-GO
-
--- Crear política de seguridad para calificaciones
-IF EXISTS (SELECT * FROM sys.security_policies WHERE name = 'CalificacionesSecurityPolicy')
-    DROP SECURITY POLICY CalificacionesSecurityPolicy;
-
--- Nota: RLS requiere configuración adicional con el contexto del usuario
--- En un entorno real, se implementaría con SESSION_CONTEXT o USER_NAME()
-
-/*
-================================================================================
-AUDITORÍA Y LOGGING DE SEGURIDAD
-================================================================================
-*/
 
 -- Tabla de auditoría para accesos y cambios críticos
 CREATE TABLE auditoria_seguridad (
@@ -491,11 +343,7 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-VISTAS DE SEGURIDAD Y MONITOREO
-================================================================================
-*/
+
 
 -- Vista para monitorear accesos por usuario y rol
 CREATE OR ALTER VIEW vw_MonitoreoAccesos AS
@@ -574,11 +422,7 @@ FROM auditoria_seguridad
 WHERE fecha_evento >= DATEADD(DAY, -90, GETDATE()); -- Últimos 90 días
 GO
 
-/*
-================================================================================
-PROCEDIMIENTOS DE GESTIÓN DE SEGURIDAD
-================================================================================
-*/
+
 
 -- Procedimiento para crear usuario completo con rol
 CREATE OR ALTER PROCEDURE sp_CrearUsuarioCompleto
@@ -739,11 +583,7 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-REPORTES DE SEGURIDAD
-================================================================================
-*/
+
 
 -- Reporte de matriz de permisos por rol
 CREATE OR ALTER PROCEDURE sp_ReporteMatrizPermisos
@@ -754,11 +594,11 @@ BEGIN
     SELECT 
         r.name as 'Rol de Base de Datos',
         CASE 
-            WHEN p.permission_name = 'SELECT' THEN '✓ Consultar'
-            WHEN p.permission_name = 'INSERT' THEN '✓ Insertar'
-            WHEN p.permission_name = 'UPDATE' THEN '✓ Actualizar'
-            WHEN p.permission_name = 'DELETE' THEN '✓ Eliminar'
-            WHEN p.permission_name = 'EXECUTE' THEN '✓ Ejecutar'
+            WHEN p.permission_name = 'SELECT' THEN ' Consultar'
+            WHEN p.permission_name = 'INSERT' THEN ' Insertar'
+            WHEN p.permission_name = 'UPDATE' THEN ' Actualizar'
+            WHEN p.permission_name = 'DELETE' THEN ' Eliminar'
+            WHEN p.permission_name = 'EXECUTE' THEN ' Ejecutar'
             ELSE p.permission_name
         END as 'Permiso',
         CASE 

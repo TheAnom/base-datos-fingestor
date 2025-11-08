@@ -7,9 +7,6 @@ Base de datos que integra procedimientos transaccionales y analiticos para la in
 - Permisos db_owner en BD2_Curso2025 
 - Permisos de sistema para instalación
 
-### IMPORTANTE
-Este proyecto usa la base de datos BD2_Curso2025 existente. No crea una nueva base de datos.
-
 ## PROCESO DE INSTALACIÓN
 
 ### MÉTODO 1: INSTALACIÓN AUTOMÁTICA
@@ -167,98 +164,84 @@ SELECT 'Roles Seguridad', CAST(COUNT(*) AS NVARCHAR(10)),
 FROM sys.database_principals WHERE type = 'R' AND name LIKE 'db_%';
 ```
 
-#### ✅ Verificación de Datos
+#### Verificación de Datos
 ```sql
--- Verificar datos de ejemplo
+-- verificar datos cargados
 SELECT 'Entidad' as Tabla, 'Registros' as Cantidad, 'Estado' as Status
 UNION ALL
 SELECT 'Estudiantes', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) >= 10 THEN '✅ OK' ELSE '⚠️ POCOS DATOS' END FROM estudiante
+       CASE WHEN COUNT(*) >= 10 THEN 'OK' ELSE 'POCOS DATOS' END FROM estudiante
 UNION ALL
 SELECT 'Profesores', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) >= 7 THEN '✅ OK' ELSE '⚠️ POCOS DATOS' END FROM profesor
+       CASE WHEN COUNT(*) >= 7 THEN 'OK' ELSE 'POCOS DATOS' END FROM profesor
 UNION ALL
 SELECT 'Cursos', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) >= 11 THEN '✅ OK' ELSE '⚠️ POCOS DATOS' END FROM curso
+       CASE WHEN COUNT(*) >= 11 THEN 'OK' ELSE 'POCOS DATOS' END FROM curso
 UNION ALL
 SELECT 'Pagos', CAST(COUNT(*) AS NVARCHAR(10)),
-       CASE WHEN COUNT(*) >= 25 THEN '✅ OK' ELSE '⚠️ POCOS DATOS' END FROM pago;
+       CASE WHEN COUNT(*) >= 25 THEN 'OK' ELSE 'POCOS DATOS' END FROM pago;
 ```
 
-#### ✅ Verificación Funcional
+#### Verificación Funcional
 ```sql
--- Probar funcionalidades críticas
--- 1. Dashboard ejecutivo
+-- probar que todo funcione
 SELECT 
-    CASE WHEN COUNT(*) > 0 THEN '✅ Dashboard OK' 
-         ELSE '❌ Dashboard ERROR' END as 'Estado Dashboard'
+    CASE WHEN COUNT(*) > 0 THEN 'Dashboard OK' 
+         ELSE 'Dashboard ERROR' END as 'Estado Dashboard'
 FROM vw_DashboardEjecutivo;
 
--- 2. Procedimientos transaccionales
+-- probar procedimientos
 DECLARE @TestResult NVARCHAR(500);
 EXEC sp_RegistrarPago 
     @ConceptoPagoId = 1, @EstudianteId = 1, @UsuarioId = 3,
     @Monto = 100000.00, @MetodoPago = 'EFECTIVO',
     @PagoId = NULL, @Resultado = @TestResult OUTPUT;
 SELECT CASE WHEN @TestResult LIKE 'ÉXITO%' 
-            THEN '✅ Transacciones OK' 
-            ELSE '❌ Transacciones ERROR' END as 'Estado Transacciones';
-
--- 3. Sistema de seguridad
-SELECT CASE WHEN COUNT(*) > 0 
-            THEN '✅ Auditoría OK' 
-            ELSE '❌ Auditoría ERROR' END as 'Estado Auditoría'
-FROM auditoria_seguridad;
+            THEN 'Transacciones OK' 
+            ELSE 'Transacciones ERROR' END as 'Estado Transacciones';
 ```
 
----
-
-## 🎮 GUÍA DE OPERACIÓN
+## GUÍA DE OPERACIÓN
 
 ### Operaciones Diarias
 
-#### 🌅 Rutina Matutina (Administrador)
+#### Rutina Matutina (Administrador)
 ```sql
--- 1. Verificar estado general del sistema
+-- ver estado del sistema
 SELECT * FROM vw_DashboardEjecutivo;
 
--- 2. Revisar eventos de seguridad críticos
+-- revisar eventos criticos
 SELECT * FROM vw_EventosSeguridad 
 WHERE nivel_criticidad IN ('CRÍTICO', 'ALTO')
 AND fecha_evento >= CAST(GETDATE() AS DATE);
 
--- 3. Verificar consultas activas problemáticas
+-- ver consultas lentas
 SELECT * FROM vw_ConsultasActivas 
-WHERE [Tiempo Total (ms)] > 30000; -- Más de 30 segundos
+WHERE [Tiempo Total (ms)] > 30000;
 ```
 
-#### 📚 Operaciones Académicas (Coordinador)
+#### Operaciones Académicas (Coordinador)
 ```sql
--- 1. Matricular nuevo estudiante
+-- matricular estudiante
 DECLARE @Resultado NVARCHAR(500);
 EXEC sp_MatricularEstudiante 
     @EstudianteId = [ID_ESTUDIANTE],
     @CursoId = [ID_CURSO],
     @UsuarioId = [ID_USUARIO],
     @Resultado = @Resultado OUTPUT;
-PRINT @Resultado;
 
--- 2. Actualizar calificaciones
+-- actualizar calificaciones
 EXEC sp_ActualizarCalificacion 
     @AsignacionCursoId = [ID_ASIGNACION],
     @NotaParcial1 = [NOTA1],
-    @NotaParcial2 = [NOTA2],
     @NotaFinal = [NOTA_FINAL],
     @ProfesorId = [ID_PROFESOR],
     @Resultado = @Resultado OUTPUT;
-
--- 3. Consultar rendimiento por curso
--- Ver archivo: 05_Consultas_Analiticas/consultas_olap.sql
 ```
 
-#### 💰 Operaciones Financieras (Secretario)
+#### Operaciones Financieras (Secretario)
 ```sql
--- 1. Registrar pago
+-- registrar pago
 DECLARE @PagoId INT, @Resultado NVARCHAR(500);
 EXEC sp_RegistrarPago 
     @ConceptoPagoId = [ID_CONCEPTO],
@@ -266,11 +249,10 @@ EXEC sp_RegistrarPago
     @UsuarioId = [ID_USUARIO],
     @Monto = [MONTO],
     @MetodoPago = '[MÉTODO]',
-    @NumeroRecibo = '[RECIBO]',
     @PagoId = @PagoId OUTPUT,
     @Resultado = @Resultado OUTPUT;
 
--- 2. Consultar estado de pagos por estudiante
+-- ver pagos de un estudiante
 SELECT p.fecha_pago, cp.nombre, p.monto, p.estado_pago
 FROM pago p
 INNER JOIN concepto_pago cp ON p.concepto_pago_id = cp.concepto_pago_id
@@ -280,180 +262,151 @@ ORDER BY p.fecha_pago DESC;
 
 ### Operaciones Semanales
 
-#### 🔧 Mantenimiento Automático
+#### Mantenimiento Automático
 ```sql
--- Ejecutar cada domingo a las 2:00 AM
+-- ejecutar cada domingo
 EXEC sp_OptimizacionAutomatica 
     @ActualizarEstadisticas = 1,
     @MantenimientoIndices = 1,
-    @EjecutarMantenimiento = 1,
-    @GenerarReporte = 1;
+    @EjecutarMantenimiento = 1;
 ```
 
-#### 📊 Actualización del Data Warehouse
+#### Actualización del Data Warehouse
 ```sql
--- Ejecutar cada lunes a las 6:00 AM
+-- ejecutar cada lunes
 EXEC DW.sp_CargaCompletaDataWarehouse 
-    @FechaInicio = NULL, -- Última semana
+    @FechaInicio = NULL,
     @FechaFin = NULL;
 ```
 
 ### Operaciones Mensuales
 
-#### 📈 Análisis de Rendimiento Completo
+#### Análisis de Rendimiento
 ```sql
--- Generar reporte mensual completo
+-- reporte mensual
 EXEC sp_ReporteRendimientoCompleto;
 
--- Análisis de fragmentación
+-- ver fragmentacion
 EXEC sp_AnalisisFragmentacion;
 
--- Reporte de actividad de usuarios
+-- actividad de usuarios
 EXEC sp_ReporteActividadUsuarios 
     @FechaInicio = DATEADD(MONTH, -1, GETDATE()),
     @FechaFin = GETDATE();
 ```
 
----
+## SOLUCIÓN DE PROBLEMAS
 
-## 🚨 SOLUCIÓN DE PROBLEMAS
+### Problemas Comunes
 
-### Problemas Comunes y Soluciones
-
-#### ❌ Error: "Base de datos no existe"
-**Síntoma:** Mensaje de error al ejecutar consultas
+#### Error: "Base de datos no existe"
 ```
 Solución:
 1. Verificar conexión: USE BD2_Curso2025;
 2. Re-ejecutar: 02_Modelo_ER/modelo_ER.sql
-3. Verificar permisos de creación de BD
 ```
 
-#### ❌ Error: "Procedimiento no encontrado"
-**Síntoma:** `Could not find stored procedure 'sp_MatricularEstudiante'`
+#### Error: "Procedimiento no encontrado"
 ```
 Solución:
 1. Ejecutar: 04_Transacciones/procedimientos_transaccionales.sql
-2. Verificar esquema: SELECT name FROM sys.procedures WHERE name LIKE 'sp_%';
-3. Revisar permisos de ejecución
+2. Verificar: SELECT name FROM sys.procedures WHERE name LIKE 'sp_%';
 ```
 
-#### ❌ Error: "Acceso denegado"
-**Síntoma:** Permisos insuficientes para operaciones
+#### Error: "Acceso denegado"
 ```
 Solución:
-1. Verificar rol actual: SELECT USER_NAME(), IS_MEMBER('db_administrador_edugestor');
+1. Verificar rol: SELECT USER_NAME(), IS_MEMBER('db_administrador_edugestor');
 2. Re-ejecutar: 06_Seguridad/seguridad_roles.sql
-3. Contactar administrador de BD
 ```
 
-#### ❌ Error: "Rendimiento lento"
-**Síntoma:** Consultas tardan más de 30 segundos
+#### Error: "Rendimiento lento"
 ```
 Solución:
 1. Ejecutar: EXEC sp_OptimizacionAutomatica @EjecutarMantenimiento = 1;
-2. Verificar fragmentación: EXEC sp_AnalisisFragmentacion;
-3. Revisar consultas activas: SELECT * FROM vw_ConsultasActivas;
+2. Ver fragmentación: EXEC sp_AnalisisFragmentacion;
 ```
 
 ### Logs y Diagnóstico
 
-#### 📋 Ubicaciones de Logs
+#### Ubicaciones de Logs
 ```sql
--- Log de auditoría del sistema
+-- ver auditoria
 SELECT TOP 100 * FROM auditoria_seguridad 
 ORDER BY fecha_evento DESC;
 
--- Log de errores de SQL Server
-EXEC xp_readerrorlog 0, 1, 'EduGestor';
-
--- Eventos de seguridad críticos
+-- eventos criticos
 SELECT * FROM vw_EventosSeguridad 
 WHERE nivel_criticidad = 'CRÍTICO'
 AND fecha_evento >= DATEADD(DAY, -7, GETDATE());
 ```
 
-#### 🔍 Comandos de Diagnóstico
+#### Comandos de Diagnóstico
 ```sql
--- Estado general del sistema
+-- ver estado del sistema
 EXEC sp_who2;
 
--- Procesos bloqueados
+-- ver bloqueos
 EXEC sp_AnalisisBloqueos;
 
--- Uso de recursos
+-- uso de recursos
 SELECT 
     DB_NAME() as 'Base de Datos',
     COUNT(*) as 'Conexiones Activas',
-    SUM(cpu_time) as 'CPU Total (ms)',
-    SUM(logical_reads) as 'Lecturas Lógicas'
+    SUM(cpu_time) as 'CPU Total (ms)'
 FROM sys.dm_exec_sessions s
 LEFT JOIN sys.dm_exec_requests r ON s.session_id = r.session_id
 WHERE s.database_id = DB_ID()
 GROUP BY s.database_id;
 ```
 
----
-
-## 📞 SOPORTE Y CONTACTO
+## SOPORTE
 
 ### Niveles de Soporte
 
-#### 🟢 Nivel 1: Auto-servicio
-- **Documentación:** `08_Documentacion/documentacion_tecnica.md`
-- **Scripts de diagnóstico:** Sección "Solución de Problemas"
-- **Verificaciones automáticas:** `INSTALACION_COMPLETA.sql`
+#### Nivel 1: Auto-servicio
+- Documentación: `08_Documentacion/documentacion_tecnica.md`
+- Scripts de diagnóstico en sección "Solución de Problemas"
 
-#### 🟡 Nivel 2: Soporte Técnico
-- **Logs del sistema:** Revisar `auditoria_seguridad`
-- **Análisis de rendimiento:** `sp_ReporteRendimientoCompleto`
-- **Escalamiento:** Contactar administrador de BD
+#### Nivel 2: Soporte Técnico
+- Revisar logs en `auditoria_seguridad`
+- Ejecutar `sp_ReporteRendimientoCompleto`
 
-#### 🔴 Nivel 3: Soporte Crítico
-- **Fallas del sistema:** Restaurar desde backup
-- **Corrupción de datos:** Ejecutar DBCC CHECKDB
-- **Problemas de seguridad:** Revisar matriz de permisos
+#### Nivel 3: Soporte Crítico
+- Restaurar desde backup
+- Ejecutar DBCC CHECKDB
 
-### Información de Contacto
+### Información del Proyecto
 
 **Proyecto:** Sistema EduGestor - Bases de Datos II  
-**Desarrollador:** Proyecto BDII - Sistema Educativo Integral  
 **Versión:** 1.0.0  
-**Fecha de Release:** Noviembre 2024  
-**Soporte:** Documentación técnica incluida  
+**Fecha:** Noviembre 2024  
 
-### Recursos Adicionales
+### Recursos
 
-- **Documentación Completa:** `08_Documentacion/documentacion_tecnica.md`
-- **Código Fuente:** Todos los archivos .sql incluyen comentarios detallados
-- **Ejemplos de Uso:** Casos prácticos en cada procedimiento almacenado
-- **Mejores Prácticas:** Implementadas según estándares de la industria
+- Documentación: `08_Documentacion/documentacion_tecnica.md`
+- Todos los archivos .sql tienen comentarios
+- Ejemplos de uso en cada procedimiento
 
----
-
-## 📋 CHECKLIST DE IMPLEMENTACIÓN
+## CHECKLIST DE IMPLEMENTACIÓN
 
 ### Pre-Implementación
-- [ ] Servidor SQL Server 2019+ instalado y configurado
-- [ ] SSMS instalado y funcional
-- [ ] Permisos de administrador verificados
-- [ ] Backup del sistema actual (si aplica)
-- [ ] Espacio en disco suficiente (10+ GB)
+- [ ] SQL Server 2019+ instalado
+- [ ] SSMS instalado
+- [ ] Permisos de administrador
+- [ ] Espacio en disco suficiente
 
 ### Durante la Implementación
-- [ ] Todos los scripts ejecutados sin errores
-- [ ] Verificaciones post-instalación completadas
-- [ ] Datos de prueba cargados correctamente
-- [ ] Dashboard ejecutivo funcional
-- [ ] Procedimientos transaccionales probados
+- [ ] Scripts ejecutados sin errores
+- [ ] Verificaciones completadas
+- [ ] Datos de prueba cargados
+- [ ] Dashboard funcional
 
 ### Post-Implementación
 - [ ] Usuarios y roles configurados
-- [ ] Capacitación del personal completada
-- [ ] Procedimientos de backup configurados
-- [ ] Monitoreo de rendimiento activo
-- [ ] Plan de mantenimiento programado
+- [ ] Backup configurado
+- [ ] Monitoreo activo
 
 ---
 
-*Documento elaborado por ingenieros especializados en bases de datos empresariales. Última actualización: Noviembre 2024*
+*Última actualización: Noviembre 2024*

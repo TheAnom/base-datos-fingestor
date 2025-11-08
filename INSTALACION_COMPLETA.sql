@@ -1,98 +1,62 @@
-/*
-================================================================================
-SCRIPT DE INSTALACIÓN COMPLETA - SISTEMA EDUGESTOR
-================================================================================
-Descripción: Script maestro para instalación completa del sistema
-Autor: Proyecto BDII
-Fecha: Noviembre 2024
-Tiempo estimado: 5-10 minutos
-Prerrequisitos: SQL Server 2019+ con permisos de administrador
-================================================================================
-*/
-
--- Configuración inicial
+-- instalacion completa del sistema
 SET NOCOUNT ON;
 SET ANSI_NULLS ON;
 SET QUOTED_IDENTIFIER ON;
 
-PRINT '================================================================================';
-PRINT 'INICIANDO INSTALACIÓN COMPLETA DEL SISTEMA EDUGESTOR';
-PRINT 'Proyecto Final - Bases de Datos II';
+PRINT 'Iniciando instalacion del sistema';
 PRINT 'Fecha: ' + CAST(GETDATE() AS NVARCHAR(30));
-PRINT '================================================================================';
 
 DECLARE @InicioInstalacion DATETIME2 = GETDATE();
 DECLARE @ErrorCount INT = 0;
 
-/*
-================================================================================
-FASE 1: CREACIÓN DE BASE DE DATOS Y MODELO TRANSACCIONAL
-================================================================================
-*/
-
+-- fase 1: modelo transaccional
 BEGIN TRY
     PRINT '';
-    PRINT 'FASE 1: Creando base de datos y modelo transaccional...';
+    PRINT 'FASE 1: Creando modelo transaccional...';
     
-    -- Conectar a base de datos del curso
     USE BD2_Curso2025;
-    PRINT '✓ Conectado a base de datos BD2_Curso2025';
+    PRINT 'Conectado a BD2_Curso2025';
     
-    -- Verificar si las tablas ya existen
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'grado')
     BEGIN
-        PRINT '  Ejecutando modelo_ER.sql...';
-        -- Aquí iría el contenido del modelo_ER.sql
-        -- Por brevedad, se asume que se ejecuta externamente
-        PRINT '  ⚠️  Ejecute manualmente: 02_Modelo_ER/modelo_ER.sql';
+        PRINT 'Ejecute manualmente: 02_Modelo_ER/modelo_ER.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Modelo transaccional ya existe';
+        PRINT 'Modelo transaccional ya existe';
     END
     
-    PRINT '✓ Fase 1 completada';
+    PRINT 'Fase 1 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 1: ' + ERROR_MESSAGE();
+    PRINT 'Error en Fase 1: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-FASE 2: CARGA DE DATOS DE PRUEBA
-================================================================================
-*/
-
+-- fase 2: datos de prueba
 BEGIN TRY
     PRINT '';
     PRINT 'FASE 2: Cargando datos de prueba...';
     
-    -- Verificar si ya hay datos
     IF (SELECT COUNT(*) FROM estudiante) = 0
     BEGIN
-        PRINT '  Ejecutando datos_prueba.sql...';
-        PRINT '  ⚠️  Ejecute manualmente: 02_Modelo_ER/datos_prueba.sql';
+        PRINT 'Ejecute manualmente: 02_Modelo_ER/datos_prueba.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Datos de prueba ya cargados';
+        PRINT 'Datos ya cargados';
     END
     
-    PRINT '✓ Fase 2 completada';
+    PRINT ' Fase 2 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 2: ' + ERROR_MESSAGE();
+    PRINT ' Error en Fase 2: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-FASE 3: MODELO DIMENSIONAL Y ETL
-================================================================================
-*/
+
 
 BEGIN TRY
     PRINT '';
@@ -102,34 +66,30 @@ BEGIN TRY
     IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'DW')
     BEGIN
         EXEC('CREATE SCHEMA DW');
-        PRINT '✓ Esquema DW creado';
+        PRINT ' Esquema DW creado';
     END
     
     -- Verificar si las dimensiones existen
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'DimTiempo' AND schema_id = SCHEMA_ID('DW'))
     BEGIN
         PRINT '  Ejecutando modelo_dimensional.sql...';
-        PRINT '  ⚠️  Ejecute manualmente: 03_Modelo_OLAP/modelo_dimensional.sql';
-        PRINT '  ⚠️  Ejecute manualmente: 03_Modelo_OLAP/etl_carga_datawarehouse.sql';
+        PRINT '    Ejecute manualmente: 03_Modelo_OLAP/modelo_dimensional.sql';
+        PRINT '    Ejecute manualmente: 03_Modelo_OLAP/etl_carga_datawarehouse.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Modelo dimensional ya existe';
+        PRINT ' Modelo dimensional ya existe';
     END
     
-    PRINT '✓ Fase 3 completada';
+    PRINT ' Fase 3 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 3: ' + ERROR_MESSAGE();
+    PRINT ' Error en Fase 3: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-FASE 4: PROCEDIMIENTOS TRANSACCIONALES
-================================================================================
-*/
+
 
 BEGIN TRY
     PRINT '';
@@ -139,26 +99,22 @@ BEGIN TRY
     IF NOT EXISTS (SELECT * FROM sys.procedures WHERE name = 'sp_MatricularEstudiante')
     BEGIN
         PRINT '  Ejecutando procedimientos_transaccionales.sql...';
-        PRINT '  ⚠️  Ejecute manualmente: 04_Transacciones/procedimientos_transaccionales.sql';
+        PRINT '    Ejecute manualmente: 04_Transacciones/procedimientos_transaccionales.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Procedimientos transaccionales ya existen';
+        PRINT ' Procedimientos transaccionales ya existen';
     END
     
-    PRINT '✓ Fase 4 completada';
+    PRINT ' Fase 4 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 4: ' + ERROR_MESSAGE();
+    PRINT ' Error en Fase 4: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-FASE 5: CONSULTAS ANALÍTICAS
-================================================================================
-*/
+
 
 BEGIN TRY
     PRINT '';
@@ -168,26 +124,22 @@ BEGIN TRY
     IF NOT EXISTS (SELECT * FROM sys.views WHERE name = 'vw_DashboardEjecutivo')
     BEGIN
         PRINT '  Ejecutando consultas_olap.sql...';
-        PRINT '  ⚠️  Ejecute manualmente: 05_Consultas_Analiticas/consultas_olap.sql';
+        PRINT '    Ejecute manualmente: 05_Consultas_Analiticas/consultas_olap.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Consultas analíticas ya existen';
+        PRINT ' Consultas analíticas ya existen';
     END
     
-    PRINT '✓ Fase 5 completada';
+    PRINT ' Fase 5 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 5: ' + ERROR_MESSAGE();
+    PRINT ' Error en Fase 5: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-FASE 6: SISTEMA DE SEGURIDAD
-================================================================================
-*/
+
 
 BEGIN TRY
     PRINT '';
@@ -197,26 +149,22 @@ BEGIN TRY
     IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_administrador_edugestor' AND type = 'R')
     BEGIN
         PRINT '  Ejecutando seguridad_roles.sql...';
-        PRINT '  ⚠️  Ejecute manualmente: 06_Seguridad/seguridad_roles.sql';
+        PRINT '    Ejecute manualmente: 06_Seguridad/seguridad_roles.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Sistema de seguridad ya configurado';
+        PRINT ' Sistema de seguridad ya configurado';
     END
     
-    PRINT '✓ Fase 6 completada';
+    PRINT ' Fase 6 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 6: ' + ERROR_MESSAGE();
+    PRINT ' Error en Fase 6: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-FASE 7: OPTIMIZACIÓN Y RENDIMIENTO
-================================================================================
-*/
+
 
 BEGIN TRY
     PRINT '';
@@ -226,26 +174,22 @@ BEGIN TRY
     IF NOT EXISTS (SELECT * FROM sys.procedures WHERE name = 'sp_OptimizacionAutomatica')
     BEGIN
         PRINT '  Ejecutando optimizacion_rendimiento.sql...';
-        PRINT '  ⚠️  Ejecute manualmente: 07_Optimizacion/optimizacion_rendimiento.sql';
+        PRINT '    Ejecute manualmente: 07_Optimizacion/optimizacion_rendimiento.sql';
     END
     ELSE
     BEGIN
-        PRINT '✓ Optimización ya configurada';
+        PRINT ' Optimización ya configurada';
     END
     
-    PRINT '✓ Fase 7 completada';
+    PRINT ' Fase 7 completada';
     
 END TRY
 BEGIN CATCH
     SET @ErrorCount += 1;
-    PRINT '✗ Error en Fase 7: ' + ERROR_MESSAGE();
+    PRINT ' Error en Fase 7: ' + ERROR_MESSAGE();
 END CATCH
 
-/*
-================================================================================
-VERIFICACIÓN FINAL DE LA INSTALACIÓN
-================================================================================
-*/
+
 
 PRINT '';
 PRINT 'VERIFICACIÓN FINAL DE LA INSTALACIÓN:';
@@ -300,11 +244,7 @@ BEGIN
     SELECT 'Usuarios', CAST(COUNT(*) AS NVARCHAR(10)) FROM usuario;
 END
 
-/*
-================================================================================
-PRUEBAS BÁSICAS DE FUNCIONALIDAD
-================================================================================
-*/
+
 
 PRINT '';
 PRINT 'EJECUTANDO PRUEBAS BÁSICAS:';
@@ -315,11 +255,11 @@ BEGIN TRY
     BEGIN
         DECLARE @EstudiantesActivos INT;
         SELECT @EstudiantesActivos = COUNT(*) FROM estudiante WHERE estado = 'ACTIVO';
-        PRINT '✓ Consulta de estudiantes: ' + CAST(@EstudiantesActivos AS NVARCHAR(10)) + ' estudiantes activos';
+        PRINT ' Consulta de estudiantes: ' + CAST(@EstudiantesActivos AS NVARCHAR(10)) + ' estudiantes activos';
     END
 END TRY
 BEGIN CATCH
-    PRINT '✗ Error en consulta de estudiantes: ' + ERROR_MESSAGE();
+    PRINT ' Error en consulta de estudiantes: ' + ERROR_MESSAGE();
     SET @ErrorCount += 1;
 END CATCH
 
@@ -327,15 +267,15 @@ END CATCH
 BEGIN TRY
     IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'sp_MatricularEstudiante')
     BEGIN
-        PRINT '✓ Procedimientos transaccionales disponibles';
+        PRINT ' Procedimientos transaccionales disponibles';
     END
     ELSE
     BEGIN
-        PRINT '⚠️  Procedimientos transaccionales no encontrados';
+        PRINT '  Procedimientos transaccionales no encontrados';
     END
 END TRY
 BEGIN CATCH
-    PRINT '✗ Error verificando procedimientos: ' + ERROR_MESSAGE();
+    PRINT ' Error verificando procedimientos: ' + ERROR_MESSAGE();
     SET @ErrorCount += 1;
 END CATCH
 
@@ -343,15 +283,15 @@ END CATCH
 BEGIN TRY
     IF EXISTS (SELECT * FROM sys.tables WHERE name = 'DimTiempo' AND schema_id = SCHEMA_ID('DW'))
     BEGIN
-        PRINT '✓ Data Warehouse configurado';
+        PRINT ' Data Warehouse configurado';
     END
     ELSE
     BEGIN
-        PRINT '⚠️  Data Warehouse no encontrado';
+        PRINT '  Data Warehouse no encontrado';
     END
 END TRY
 BEGIN CATCH
-    PRINT '✗ Error verificando Data Warehouse: ' + ERROR_MESSAGE();
+    PRINT ' Error verificando Data Warehouse: ' + ERROR_MESSAGE();
     SET @ErrorCount += 1;
 END CATCH
 
@@ -359,23 +299,19 @@ END CATCH
 BEGIN TRY
     IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'db_administrador_edugestor')
     BEGIN
-        PRINT '✓ Sistema de seguridad configurado';
+        PRINT ' Sistema de seguridad configurado';
     END
     ELSE
     BEGIN
-        PRINT '⚠️  Sistema de seguridad no encontrado';
+        PRINT '  Sistema de seguridad no encontrado';
     END
 END TRY
 BEGIN CATCH
-    PRINT '✗ Error verificando seguridad: ' + ERROR_MESSAGE();
+    PRINT ' Error verificando seguridad: ' + ERROR_MESSAGE();
     SET @ErrorCount += 1;
 END CATCH
 
-/*
-================================================================================
-RESUMEN FINAL
-================================================================================
-*/
+
 
 DECLARE @FinInstalacion DATETIME2 = GETDATE();
 DECLARE @TiempoTotal INT = DATEDIFF(SECOND, @InicioInstalacion, @FinInstalacion);
@@ -392,10 +328,10 @@ PRINT 'Errores encontrados: ' + CAST(@ErrorCount AS NVARCHAR(10));
 IF @ErrorCount = 0
 BEGIN
     PRINT '';
-    PRINT '🎉 INSTALACIÓN COMPLETADA EXITOSAMENTE';
+    PRINT ' INSTALACIÓN COMPLETADA EXITOSAMENTE';
     PRINT '';
     PRINT 'PRÓXIMOS PASOS:';
-    PRINT '1. Ejecutar manualmente los scripts indicados con ⚠️';
+    PRINT '1. Ejecutar manualmente los scripts indicados con ';
     PRINT '2. Cargar el Data Warehouse: EXEC DW.sp_CargaCompletaDataWarehouse';
     PRINT '3. Verificar dashboard: SELECT * FROM vw_DashboardEjecutivo';
     PRINT '4. Ejecutar optimización: EXEC sp_OptimizacionAutomatica';
@@ -403,7 +339,7 @@ END
 ELSE
 BEGIN
     PRINT '';
-    PRINT '⚠️  INSTALACIÓN COMPLETADA CON ADVERTENCIAS';
+    PRINT '  INSTALACIÓN COMPLETADA CON ADVERTENCIAS';
     PRINT 'Revise los errores indicados arriba y ejecute los scripts manualmente.';
 END
 

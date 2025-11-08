@@ -1,20 +1,11 @@
--- ================================================================================
 -- SISTEMA DE SEGURIDAD BASADO EN ROLES - EDUGESTOR
--- ================================================================================
--- Descripción: Implementación completa de seguridad con roles, usuarios y permisos
 --              granulares siguiendo el principio de menor privilegio
--- Autor: Proyecto BDII
--- Fecha: Noviembre 2024
--- Características: RBAC, usuarios de BD, esquemas de seguridad, auditoría
--- ================================================================================
 
 -- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
--- ================================================================================
 -- CREACIÓN DE ROLES DE BASE DE DATOS
--- ================================================================================
 -- Estrategia: Roles específicos por funcionalidad con permisos granulares
 -- Principio: Menor privilegio - cada rol solo tiene los permisos mínimos necesarios
 
@@ -55,9 +46,7 @@ BEGIN
     PRINT 'Rol db_analista_datos creado';
 END
 
--- ================================================================================
 -- ASIGNACIÓN DE PERMISOS POR ROL
--- ================================================================================
 
 -- ROL: ADMINISTRADOR EDUGESTOR
 -- Permisos: Control total sobre el sistema (excepto sistema)
@@ -220,10 +209,8 @@ GRANT EXECUTE ON SCHEMA::DW TO db_analista_datos;
 -- Vistas analíticas
 GRANT SELECT ON vw_DashboardEjecutivo TO db_analista_datos;
 
-PRINT 'Permisos de analista de datos configurados correctamente';-- ==
-==============================================================================
+PRINT 'Permisos de analista de datos configurados correctamente';==============================================================================
 -- CREACIÓN DE USUARIOS DE BASE DE DATOS
--- ================================================================================
 -- Estrategia: Usuarios específicos mapeados a logins de SQL Server
 -- Nota: En producción, estos usuarios se crearían con logins reales
 
@@ -264,9 +251,7 @@ EXEC sp_CrearUsuarioSiNoExiste 'prof_ciencias', 'db_profesor';
 EXEC sp_CrearUsuarioSiNoExiste 'consulta_reportes', 'db_consulta_general';
 EXEC sp_CrearUsuarioSiNoExiste 'analista_bi', 'db_analista_datos';
 
--- ================================================================================
 -- AUDITORÍA Y LOGGING DE SEGURIDAD
--- ================================================================================
 
 -- Tabla de auditoría para accesos y cambios críticos
 CREATE TABLE auditoria_seguridad (

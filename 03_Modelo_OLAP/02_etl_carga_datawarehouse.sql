@@ -1,21 +1,8 @@
--- ================================================================================
--- PROCESOS ETL - CARGA DEL DATA WAREHOUSE
--- ================================================================================
--- Descripción: Procedimientos para extraer, transformar y cargar datos desde 
---              el sistema transaccional al modelo dimensional
--- Autor: Proyecto BDII
--- Fecha: Noviembre 2024
--- Estrategia: Carga incremental con control de cambios (SCD Tipo 2)
--- ================================================================================
-
--- Configuración inicial - Conectar a base de datos del curso
+-- procesos ETL para cargar el data warehouse
 USE BD2_Curso2025;
 GO
 
--- ================================================================================
--- PROCEDIMIENTO: CARGA DIMENSIÓN TIEMPO
--- ================================================================================
-
+-- cargar dimension tiempo
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimTiempo
     @FechaInicio DATE = NULL,
     @FechaFin DATE = NULL
@@ -23,18 +10,16 @@ AS
 BEGIN
     SET NOCOUNT ON;
     
-    -- Valores por defecto: año actual completo
     IF @FechaInicio IS NULL SET @FechaInicio = DATEFROMPARTS(YEAR(GETDATE()), 1, 1);
     IF @FechaFin IS NULL SET @FechaFin = DATEFROMPARTS(YEAR(GETDATE()), 12, 31);
     
     DECLARE @FechaActual DATE = @FechaInicio;
     
-    PRINT 'Iniciando carga de DimTiempo desde ' + CAST(@FechaInicio AS NVARCHAR(10)) + 
+    PRINT 'Cargando fechas desde ' + CAST(@FechaInicio AS NVARCHAR(10)) + 
           ' hasta ' + CAST(@FechaFin AS NVARCHAR(10));
     
     WHILE @FechaActual <= @FechaFin
     BEGIN
-        -- Insertar solo si no existe
         IF NOT EXISTS (SELECT 1 FROM DW.DimTiempo WHERE fecha = @FechaActual)
         BEGIN
             INSERT INTO DW.DimTiempo (
@@ -75,9 +60,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO: CARGA DIMENSIÓN ESTUDIANTE (SCD TIPO 2)
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimEstudiante
 AS
@@ -146,9 +129,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO: CARGA DIMENSIÓN CURSO (SCD TIPO 2)
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimCurso
 AS
@@ -230,9 +211,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO: CARGA DIMENSIÓN CONCEPTO PAGO
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimConceptoPago
 AS
@@ -295,9 +274,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO: CARGA DIMENSIÓN USUARIO
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarDimUsuario
 AS
@@ -362,9 +339,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO: CARGA TABLA DE HECHOS - CALIFICACIONES
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarFactCalificaciones
     @FechaInicio DATE = NULL,
@@ -439,9 +414,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO: CARGA TABLA DE HECHOS - PAGOS
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargarFactPagos
     @FechaInicio DATE = NULL,
@@ -499,9 +472,7 @@ BEGIN
 END
 GO
 
--- ================================================================================
 -- PROCEDIMIENTO MAESTRO: CARGA COMPLETA DEL DATA WAREHOUSE
--- ================================================================================
 
 CREATE OR ALTER PROCEDURE DW.sp_CargaCompletaDataWarehouse
     @FechaInicio DATE = NULL,

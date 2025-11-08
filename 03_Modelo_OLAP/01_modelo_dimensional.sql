@@ -1,66 +1,40 @@
--- ================================================================================
--- MODELO DIMENSIONAL - DATA WAREHOUSE EDUGESTOR
--- ================================================================================
--- Descripción: Implementación de modelo estrella para análisis OLAP
--- Autor: Proyecto BDII
--- Fecha: Noviembre 2024
--- Arquitectura: Esquema Estrella con jerarquías temporales y académicas
--- ================================================================================
-
--- Configuración inicial - Conectar a base de datos del curso
+-- Data warehouse para analisis
 USE BD2_Curso2025;
 GO
 
--- ================================================================================
--- CREACIÓN DE ESQUEMA PARA DATA WAREHOUSE
--- ================================================================================
-
--- Crear esquema separado para el Data Warehouse
+-- crear esquema DW
 IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'DW')
 BEGIN
     EXEC('CREATE SCHEMA DW');
-    PRINT 'Esquema DW creado para Data Warehouse';
+    PRINT 'Esquema DW creado';
 END
 GO
 
--- ================================================================================
--- DIMENSIONES DEL DATA WAREHOUSE
--- ================================================================================
-
--- DIMENSIÓN TIEMPO
--- Propósito: Jerarquía temporal completa para análisis por períodos
--- Jerarquías: Año > Trimestre > Mes > Día
+-- dimension tiempo
 CREATE TABLE DW.DimTiempo (
     tiempo_key INT IDENTITY(1,1) PRIMARY KEY,
     fecha DATE NOT NULL UNIQUE,
     
-    -- Jerarquía de día
     dia INT NOT NULL,
-    dia_semana INT NOT NULL, -- 1=Lunes, 7=Domingo
+    dia_semana INT NOT NULL,
     nombre_dia NVARCHAR(10) NOT NULL,
-    dia_año INT NOT NULL, -- 1-366
+    dia_año INT NOT NULL,
     
-    -- Jerarquía de semana
-    semana_año INT NOT NULL, -- 1-53
+    semana_año INT NOT NULL,
     
-    -- Jerarquía de mes
     mes INT NOT NULL,
     nombre_mes NVARCHAR(15) NOT NULL,
-    mes_año NVARCHAR(7) NOT NULL, -- 2024-01
+    mes_año NVARCHAR(7) NOT NULL,
     
-    -- Jerarquía de trimestre
     trimestre INT NOT NULL,
-    nombre_trimestre NVARCHAR(10) NOT NULL, -- Q1, Q2, Q3, Q4
-    trimestre_año NVARCHAR(7) NOT NULL, -- 2024-Q1
+    nombre_trimestre NVARCHAR(10) NOT NULL,
+    trimestre_año NVARCHAR(7) NOT NULL,
     
-    -- Jerarquía de año
     año INT NOT NULL,
     
-    -- Períodos académicos
-    periodo_academico NVARCHAR(10), -- 2024-1, 2024-2
+    periodo_academico NVARCHAR(10),
     es_periodo_lectivo BIT DEFAULT 1,
     
-    -- Indicadores especiales
     es_fin_semana BIT NOT NULL,
     es_festivo BIT DEFAULT 0,
     nombre_festivo NVARCHAR(50),
@@ -68,43 +42,33 @@ CREATE TABLE DW.DimTiempo (
     fecha_creacion DATETIME2 DEFAULT GETDATE()
 );
 
--- DIMENSIÓN ESTUDIANTE
--- Propósito: Información demográfica y académica de estudiantes
--- Jerarquías: Institución > Grado > Estudiante
+-- dimension estudiante
 CREATE TABLE DW.DimEstudiante (
     estudiante_key INT IDENTITY(1,1) PRIMARY KEY,
-    estudiante_id INT NOT NULL, -- FK al sistema transaccional
+    estudiante_id INT NOT NULL,
     
-    -- Información personal
     nombre_completo NVARCHAR(100) NOT NULL,
     documento_identidad NVARCHAR(20),
     
-    -- Jerarquía académica
     grado_id INT,
     grado_nombre NVARCHAR(50),
-    nivel_educativo NVARCHAR(50), -- Primaria, Secundaria, Bachillerato
+    nivel_educativo NVARCHAR(50),
     
-    -- Jerarquía institucional
     institucion NVARCHAR(100),
     
-    -- Información demográfica
     edad_ingreso INT,
     año_ingreso INT,
     
-    -- Indicadores de estado
     estado_actual NVARCHAR(20),
     es_activo BIT DEFAULT 1,
     
-    -- Metadatos
     fecha_inicio_vigencia DATE NOT NULL,
-    fecha_fin_vigencia DATE, -- NULL = vigente
+    fecha_fin_vigencia DATE,
     es_vigente BIT DEFAULT 1,
     fecha_creacion DATETIME2 DEFAULT GETDATE()
 );
 
 -- DIMENSIÓN CURSO
--- Propósito: Información académica de cursos y profesores
--- Jerarquías: Área > Materia > Curso
 CREATE TABLE DW.DimCurso (
     curso_key INT IDENTITY(1,1) PRIMARY KEY,
     curso_id INT NOT NULL, -- FK al sistema transaccional
@@ -134,104 +98,79 @@ CREATE TABLE DW.DimCurso (
     es_obligatorio BIT DEFAULT 1,
     es_activo BIT DEFAULT 1,
     
-    -- Metadatos
     fecha_inicio_vigencia DATE NOT NULL,
     fecha_fin_vigencia DATE,
     es_vigente BIT DEFAULT 1,
     fecha_creacion DATETIME2 DEFAULT GETDATE()
 );
 
--- DIMENSIÓN CONCEPTO DE PAGO
--- Propósito: Categorización de conceptos financieros
--- Jerarquías: Tipo > Categoría > Concepto
+-- dimension concepto de pago
 CREATE TABLE DW.DimConceptoPago (
     concepto_pago_key INT IDENTITY(1,1) PRIMARY KEY,
-    concepto_pago_id INT NOT NULL, -- FK al sistema transaccional
+    concepto_pago_id INT NOT NULL,
     
-    -- Información del concepto
     nombre_concepto NVARCHAR(100) NOT NULL,
     descripcion NVARCHAR(300),
     
-    -- Jerarquía de clasificación
-    tipo_concepto NVARCHAR(50), -- INSCRIPCION, MENSUALIDAD, etc.
-    categoria_financiera NVARCHAR(50), -- OBLIGATORIO, OPCIONAL, EXTRAORDINARIO
+    tipo_concepto NVARCHAR(50),
+    categoria_financiera NVARCHAR(50),
     
-    -- Características financieras
     monto_base DECIMAL(10,2),
     es_obligatorio BIT,
     permite_fraccionamiento BIT DEFAULT 0,
     
-    -- Indicadores
     es_activo BIT DEFAULT 1,
     
-    -- Metadatos
     fecha_inicio_vigencia DATE NOT NULL,
     fecha_fin_vigencia DATE,
     es_vigente BIT DEFAULT 1,
     fecha_creacion DATETIME2 DEFAULT GETDATE()
 );
 
--- DIMENSIÓN USUARIO
--- Propósito: Información de usuarios que registran transacciones
--- Jerarquías: Rol > Departamento > Usuario
+-- dimension usuario
 CREATE TABLE DW.DimUsuario (
     usuario_key INT IDENTITY(1,1) PRIMARY KEY,
-    usuario_id INT NOT NULL, -- FK al sistema transaccional
+    usuario_id INT NOT NULL,
     
-    -- Información del usuario
     nombre_usuario NVARCHAR(50) NOT NULL,
     nombre_completo NVARCHAR(100),
     
-    -- Jerarquía organizacional
     rol_nombre NVARCHAR(50),
     nivel_acceso INT,
-    departamento NVARCHAR(50), -- Académico, Financiero, Administrativo
+    departamento NVARCHAR(50),
     
-    -- Indicadores
     es_activo BIT DEFAULT 1,
     
-    -- Metadatos
     fecha_inicio_vigencia DATE NOT NULL,
     fecha_fin_vigencia DATE,
     es_vigente BIT DEFAULT 1,
     fecha_creacion DATETIME2 DEFAULT GETDATE()
 );
 
--- ================================================================================
--- TABLAS DE HECHOS (FACT TABLES)
--- ================================================================================
-
--- TABLA DE HECHOS: CALIFICACIONES
--- Propósito: Análisis del rendimiento académico
--- Métricas: Notas, promedios, tasas de aprobación
+-- tabla de hechos calificaciones
 CREATE TABLE DW.FactCalificaciones (
     calificacion_key BIGINT IDENTITY(1,1) PRIMARY KEY,
     
-    -- Claves foráneas a dimensiones
     tiempo_key INT NOT NULL,
     estudiante_key INT NOT NULL,
     curso_key INT NOT NULL,
     
-    -- Identificadores del sistema transaccional
     calificacion_id INT NOT NULL,
     asignacion_curso_id INT NOT NULL,
     
-    -- Métricas de calificaciones
     nota_parcial1 DECIMAL(5,2),
     nota_parcial2 DECIMAL(5,2),
     nota_parcial3 DECIMAL(5,2),
     nota_final DECIMAL(5,2),
     
-    -- Métricas calculadas
     promedio_parciales DECIMAL(5,2),
     diferencia_final_promedio DECIMAL(5,2),
     
-    -- Indicadores de rendimiento
     es_aprobado BIT,
-    es_excelente BIT, -- Nota >= 90
-    es_bueno BIT,     -- Nota >= 80
-    es_regular BIT,   -- Nota >= 70
-    requiere_refuerzo BIT, -- Nota < 70
+    es_excelente BIT,
+    es_bueno BIT,
+    es_regular BIT,
+    requiere_refuerzo BIT,
     
     -- Métricas de tiempo
     dias_para_calificar INT, -- Días entre asignación y calificación
@@ -246,8 +185,6 @@ CREATE TABLE DW.FactCalificaciones (
 );
 
 -- TABLA DE HECHOS: PAGOS
--- Propósito: Análisis financiero y de recaudación
--- Métricas: Montos, frecuencias, métodos de pago
 CREATE TABLE DW.FactPagos (
     pago_key BIGINT IDENTITY(1,1) PRIMARY KEY,
     
@@ -291,9 +228,7 @@ CREATE TABLE DW.FactPagos (
     CONSTRAINT FK_FactPago_Usuario FOREIGN KEY (usuario_key) REFERENCES DW.DimUsuario(usuario_key)
 );
 
--- ================================================================================
 -- ÍNDICES PARA OPTIMIZACIÓN DE CONSULTAS OLAP
--- ================================================================================
 
 -- Índices en dimensiones (campos de jerarquía)
 CREATE NONCLUSTERED INDEX IX_DimTiempo_Año_Mes ON DW.DimTiempo(año, mes);

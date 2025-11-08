@@ -1,24 +1,10 @@
-/*
-================================================================================
-OPTIMIZACIÓN Y ANÁLISIS DE RENDIMIENTO - SISTEMA EDUGESTOR
-================================================================================
-Descripción: Análisis de planes de ejecución, creación de índices optimizados,
-             estadísticas de rendimiento y mejoras de consultas
-Autor: Proyecto BDII
-Fecha: Noviembre 2024
-Características: Índices estratégicos, análisis de fragmentación, estadísticas
-================================================================================
-*/
+
 
 -- Configuración inicial - Conectar a base de datos del curso
 USE BD2_Curso2025;
 GO
 
-/*
-================================================================================
-ANÁLISIS INICIAL DE RENDIMIENTO
-================================================================================
-*/
+
 
 -- Procedimiento para analizar el estado actual de la base de datos
 CREATE OR ALTER PROCEDURE sp_AnalisisRendimientoInicial
@@ -109,11 +95,7 @@ GO
 -- Ejecutar análisis inicial
 EXEC sp_AnalisisRendimientoInicial;
 
-/*
-================================================================================
-CREACIÓN DE ÍNDICES OPTIMIZADOS
-================================================================================
-*/
+
 
 PRINT '';
 PRINT 'CREANDO ÍNDICES OPTIMIZADOS BASADOS EN PATRONES DE CONSULTA...';
@@ -212,11 +194,7 @@ BEGIN
     PRINT 'Índice IX_DimTiempo_jerarquia_optimizado creado';
 END
 
-/*
-================================================================================
-ESTADÍSTICAS PERSONALIZADAS
-================================================================================
-*/
+
 
 -- Crear estadísticas para columnas frecuentemente filtradas
 
@@ -236,11 +214,7 @@ BEGIN
     PRINT 'Estadística STAT_pago_fecha_monto creada';
 END
 
-/*
-================================================================================
-CONSULTAS DE PRUEBA PARA ANÁLISIS DE PLANES DE EJECUCIÓN
-================================================================================
-*/
+
 
 -- Procedimiento para ejecutar consultas de prueba y analizar rendimiento
 CREATE OR ALTER PROCEDURE sp_PruebasRendimiento
@@ -304,11 +278,7 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-ANÁLISIS DE CONSULTAS COSTOSAS
-================================================================================
-*/
+
 
 -- Vista para identificar consultas costosas
 CREATE OR ALTER VIEW vw_ConsultasCostosas AS
@@ -390,12 +360,7 @@ BEGIN
     
     DROP TABLE #FragmentacionIndices;
 END
-GO/*
-==
-==============================================================================
-PROCEDIMIENTOS DE MANTENIMIENTO AUTOMÁTICO
-================================================================================
-*/
+GO
 
 -- Procedimiento para actualizar estadísticas automáticamente
 CREATE OR ALTER PROCEDURE sp_ActualizarEstadisticas
@@ -508,11 +473,11 @@ BEGIN
         BEGIN
             BEGIN TRY
                 EXEC sp_executesql @SQL;
-                PRINT '  ✓ Ejecutado exitosamente';
+                PRINT '   Ejecutado exitosamente';
                 SET @Contador += 1;
             END TRY
             BEGIN CATCH
-                PRINT '  ✗ Error: ' + ERROR_MESSAGE();
+                PRINT '   Error: ' + ERROR_MESSAGE();
             END CATCH
         END
         ELSE
@@ -534,11 +499,7 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-MONITOREO DE RENDIMIENTO EN TIEMPO REAL
-================================================================================
-*/
+
 
 -- Vista para monitorear consultas activas
 CREATE OR ALTER VIEW vw_ConsultasActivas AS
@@ -608,11 +569,7 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-REPORTES DE RENDIMIENTO
-================================================================================
-*/
+
 
 -- Procedimiento para reporte completo de rendimiento
 CREATE OR ALTER PROCEDURE sp_ReporteRendimientoCompleto
@@ -701,11 +658,7 @@ BEGIN
 END
 GO
 
-/*
-================================================================================
-PROCEDIMIENTO DE OPTIMIZACIÓN AUTOMÁTICA
-================================================================================
-*/
+
 
 -- Procedimiento maestro para optimización automática
 CREATE OR ALTER PROCEDURE sp_OptimizacionAutomatica
